@@ -50,14 +50,14 @@
             "title": "Contactez-nous",
             "description": "Une question, une suggestion ou une demande ? Contactez-nous et nous reviendrons vers vous le plus rapidement possible.",
             "contact": {
-                "address": "INSA Hauts-de-France, Claudin LeJeune 3, E15<br />Jeudi 14h-18h",
+                "address": "INSA Hauts-de-France, Claudin LeJeune 1, TP2<br />Jeudi 14h-18h",
                 "instagram": {
                     "label": "@clubinfoinsahdf",
                     "link": "https://instagram.com/clubinfoinsahdf"
                 },
                 "mail": {
-                    "label": "insa.sh.hdf@gmail.com",
-                    "link": "mailto:insa.sh.hdf@gmail.com"
+                    "label": "contact@insash.org",
+                    "link": "mailto:contact@insash.org"
                 }
             },
             "form": {

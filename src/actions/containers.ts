@@ -135,17 +135,6 @@ export async function createContainer(data: { name: string, hostPort: number, me
     
     const parsedData = parsed.data;
     
-    const container = await prisma.container.findFirst({
-        where: { name : parsedData.name},
-        select: {
-            id : true
-        }
-    });
-
-    if (container) {
-        return false;
-    }
-    
     try {
         const r = await fetch(process.env.API_URL + "/container", {
             method: "PUT",
