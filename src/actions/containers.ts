@@ -44,7 +44,7 @@ export async function getContainerFull(id: string): Promise<ContainerWithActivit
             users: true,
             containerActivities: true,
             containerNotifications: {
-                include: { 
+                include: {
                     user: true
                 }
             }
@@ -91,7 +91,7 @@ export async function getContainerStats(containerId: string, period: "hour" | "4
     const stats = await r.json();
 
     const clientStats: ClientContainerStat[] = [];
-    for (const [timestamp, stat] of Object.entries(stats) as [string, { memory: { used: number, limit: number}, cpu: { usage_percent: number, limit: number }, net: { up: number, down: number, delta_up: number, delta_down: number } }][]) {
+    for (const [timestamp, stat] of Object.entries(stats) as [string, { memory: { used: number, limit: number }, cpu: { usage_percent: number, limit: number }, net: { up: number, down: number, delta_up: number, delta_down: number } }][]) {
         clientStats.push({
             timestamp: parseInt(timestamp),
             memory: stat.memory.used,
@@ -132,8 +132,20 @@ export async function createContainer(data: { name: string, hostPort: number, me
         return false;
     }
 
+    
     const parsedData = parsed.data;
+    
+    const container = await prisma.container.findFirst({
+        where: { name : parsedData.name},
+        select: {
+            id : true
+        }
+    });
 
+    if (container) {
+        return false;
+    }
+    
     try {
         const r = await fetch(process.env.API_URL + "/container", {
             method: "PUT",
@@ -218,7 +230,7 @@ export async function linkUsers(containerId: string, data: { users: string[] }):
     }
 }
 
-export async function changeContainerDomain(containerId: string, data: { domain: string}): Promise<boolean> {
+export async function changeContainerDomain(containerId: string, data: { domain: string }): Promise<boolean> {
     const session = await getServerSession(authConfig);
 
     if (!session) {
@@ -303,7 +315,7 @@ export async function startContainer(containerId: string): Promise<boolean> {
                 message: ""
             }
         })
-        
+
         return true;
     }
 
@@ -411,7 +423,16 @@ export async function getAvailableHostPorts(): Promise<number[]> {
         return [];
     }
 
-    const basePorts = [0, 5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000]
+    const basePorts: number[] = [];
+    const portAreaSize = parseInt(process.env.PORT_AREA_SIZE || "");
+    if (isNaN(portAreaSize)) {
+        console.log(`env PORT_AREA_SIZE not present or malformed`)
+        return []
+    }
+    for (let port = 0; port <= 65535 ; port += portAreaSize) {
+        basePorts.push(port);        
+    }
+
 
     try {
         return await prisma.container.findMany({
@@ -429,7 +450,7 @@ export async function editAdminMemoryLimit(containerId: string, data: { memory: 
         return false;
     }
 
-    const parsed =  EditMemoryLimitContainerFormSchema.safeParse(data);
+    const parsed = EditMemoryLimitContainerFormSchema.safeParse(data);
 
     if (!parsed.success) {
         return false;
@@ -540,7 +561,7 @@ export async function deleteContainer(id: string): Promise<boolean> {
         })
         await prisma.container.delete({
             where: { id: id },
-            
+
         });
 
         revalidatePath("/app/administration");

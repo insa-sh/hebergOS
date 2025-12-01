@@ -51,7 +51,7 @@ export async function apiEditCpuLimit(containerId: string, newCpuLimit: number):
         return false;
     }
 
-    const parsed = EditCpuLimitContainerFormSchema.safeParse({ memory: newCpuLimit });
+    const parsed = EditCpuLimitContainerFormSchema.safeParse({ cpu: newCpuLimit });
 
     if (!parsed.success) {
         return false;
