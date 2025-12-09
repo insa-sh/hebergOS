@@ -15,6 +15,7 @@ import Link from "next/link";
 import { Badge } from "../ui/badge";
 import StartContainer from "../dialogs/containers/StartContainer";
 import StopContainer from "../dialogs/containers/StopContainer";
+import { useRouter } from "next/router";
 
 export const containersColumns: ColumnDef<Container>[] = [
     {
@@ -142,6 +143,7 @@ export const containersColumns: ColumnDef<Container>[] = [
         id: "actions",
         cell: ({ row, table }) => {
             const state = row.original.state;
+            const router = useRouter();
 
             const [openStart, setOpenStart] = useState(false);
             const [openStop, setOpenStop] = useState(false);
@@ -160,7 +162,7 @@ export const containersColumns: ColumnDef<Container>[] = [
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuLabel>{table.options.meta?.t('actions.label')}</DropdownMenuLabel>
-                            <DropdownMenuItem>{ table.options.meta?.t('actions.open') }</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => router.push(`/app/containers/${row.original.id}`)}>{ table.options.meta?.t('actions.open') }</DropdownMenuItem>
                             {state === "RUNNING"
                                 ? <DropdownMenuItem onClick={() => setOpenStop(true)}>{table.options.meta?.t('actions.stop')}</DropdownMenuItem>
                                 : <DropdownMenuItem onClick={() => setOpenStart(true)}>{table.options.meta?.t('actions.start')}</DropdownMenuItem>
