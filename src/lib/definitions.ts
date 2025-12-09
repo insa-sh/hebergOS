@@ -80,7 +80,7 @@ export const EditRolesFormSchema = z.object({
 });
 
 export const CreateContainerFormSchema = z.object({
-    name: z.string().trim().regex(/^((?!-)[A-Za-z0-9-]{3,63}(?<!-))$/,{message:'Name should be at least 3 characters and only contains letters, numbers. It can also contains hyphens but not in the start nor in the end.'}),
+    name: z.string().trim().regex(/^((?!-)[a-z0-9-]{3,63}(?<!-))$/,{message:'Name should be at least 3 characters and only contains letters, numbers. It can also contains hyphens but not in the start nor in the end.'}),
     hostPort: z.number({ coerce: true }).int().min(1024, { message: 'Host port must be at least 1024.' }),
     memory: z.number({ coerce: true }).min(0, { message: 'Memory must be at least 0 Go.' }),
     cpu: z.number({ coerce: true }).min(0, { message: 'CPU must be at least 0.' }),
