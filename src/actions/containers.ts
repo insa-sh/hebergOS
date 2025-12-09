@@ -513,7 +513,7 @@ export async function editAdminCpuLimit(containerId: string, data: { cpu: number
                     connect: { id: containerId }
                 },
                 type: ContainerActivityType.CPU_UPDATE,
-                message: `${parsedData.cpu}%`
+                message: `${parsedData.cpu}`
             }
         })
 
