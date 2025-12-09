@@ -63,7 +63,7 @@ export async function apiEditCpuLimit(containerId: string, newCpuLimit: number):
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            cpulimit: parsed.data.cpu
+            cpulimit: parsed.data.cpu/100
         }),
     });
 

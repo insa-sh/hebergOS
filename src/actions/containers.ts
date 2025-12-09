@@ -132,9 +132,9 @@ export async function createContainer(data: { name: string, hostPort: number, me
         return false;
     }
 
-    
+
     const parsedData = parsed.data;
-    
+
     try {
         const r = await fetch(process.env.API_URL + "/container", {
             method: "PUT",
@@ -145,7 +145,7 @@ export async function createContainer(data: { name: string, hostPort: number, me
                 name: parsedData.name,
                 host_port_root: parsedData.hostPort,
                 memory: parsedData.memory,
-                cpulimit: parsedData.cpu,
+                cpulimit: parsedData.cpu / 100,
             })
         });
 
@@ -161,7 +161,7 @@ export async function createContainer(data: { name: string, hostPort: number, me
                 name: parsedData.name,
                 hostPort: parsedData.hostPort,
                 memory: parsedData.memory,
-                cpu: parsedData.cpu,
+                cpu: parsedData.cpu / 100,
             }
         });
 
@@ -418,8 +418,8 @@ export async function getAvailableHostPorts(): Promise<number[]> {
         console.log(`env PORT_AREA_SIZE not present or malformed`)
         return []
     }
-    for (let port = 2000; port <= 65535 ; port += portAreaSize) {
-        basePorts.push(port);        
+    for (let port = 2000; port <= 65535; port += portAreaSize) {
+        basePorts.push(port);
     }
 
 
@@ -503,7 +503,7 @@ export async function editAdminCpuLimit(containerId: string, data: { cpu: number
         await prisma.container.update({
             where: { id: containerId },
             data: {
-                cpu: parsedData.cpu
+                cpu: parsedData.cpu / 100
             }
         });
 
@@ -513,7 +513,7 @@ export async function editAdminCpuLimit(containerId: string, data: { cpu: number
                     connect: { id: containerId }
                 },
                 type: ContainerActivityType.CPU_UPDATE,
-                message: `${parsedData.cpu}`
+                message: `${parsedData.cpu}%`
             }
         })
 
