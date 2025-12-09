@@ -28,7 +28,7 @@ export default function CreateContainerDialog({ children, availableHostPorts }: 
             name: '',
             hostPort: availableHostPorts[0] || 0,
             memory: 0.5,
-            cpu: 0.5,
+            cpu: 50,
         }
     })
 
