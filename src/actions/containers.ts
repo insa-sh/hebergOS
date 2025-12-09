@@ -418,7 +418,7 @@ export async function getAvailableHostPorts(): Promise<number[]> {
         console.log(`env PORT_AREA_SIZE not present or malformed`)
         return []
     }
-    for (let port = 0; port <= 65535 ; port += portAreaSize) {
+    for (let port = 2000; port <= 65535 ; port += portAreaSize) {
         basePorts.push(port);        
     }
 
