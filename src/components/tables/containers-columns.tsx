@@ -15,7 +15,7 @@ import Link from "next/link";
 import { Badge } from "../ui/badge";
 import StartContainer from "../dialogs/containers/StartContainer";
 import StopContainer from "../dialogs/containers/StopContainer";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export const containersColumns: ColumnDef<Container>[] = [
     {
