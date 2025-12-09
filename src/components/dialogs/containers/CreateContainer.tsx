@@ -113,7 +113,7 @@ export default function CreateContainerDialog({ children, availableHostPorts }: 
                                 <FormItem>
                                     <FormLabel>{t('form.fields.memory.label')}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder={t('form.fields.name.placeholder')} {...field} />
+                                        <Input placeholder={t('form.fields.memory.placeholder')} {...field} />
                                     </FormControl>
                                     <FormDescription>{t('form.fields.memory.description')}</FormDescription>
                                     <FormMessage />
@@ -128,7 +128,7 @@ export default function CreateContainerDialog({ children, availableHostPorts }: 
                                 <FormItem>
                                     <FormLabel>{t('form.fields.cpu.label')}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder={t('form.fields.name.placeholder')} {...field} />
+                                        <Input placeholder={t('form.fields.cpu.placeholder')} {...field} />
                                     </FormControl>
                                     <FormDescription>{t('form.fields.cpu.description')}</FormDescription>
                                     <FormMessage />
