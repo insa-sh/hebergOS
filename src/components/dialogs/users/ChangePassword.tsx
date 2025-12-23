@@ -19,7 +19,8 @@ export default function ChangePassword({ user, children, open, setOpen }: { user
         resolver: zodResolver(ChangePasswordFormSchema),
         defaultValues: {
             password: "",
-            passwordConfirmation: ""
+            passwordConfirmation: "",
+            oldPassword : ""
         }
     });
 
