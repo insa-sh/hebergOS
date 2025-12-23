@@ -183,19 +183,22 @@ export async function changePassword(userId: string, data: { oldPassword: string
     }
 
     try {
-        const hashedOldPassword = await bcrypt.hash(parsedData.data.oldPassword, 13);
-
         const user = await prisma.user.findUnique({
             where: {
-                id: userId,
-                password : hashedOldPassword
+                id: userId
+            },select: {
+                password : true
             }
         });
-        
-        if (!user) { // Old password is wrong
+
+        if (!user) { 
             return false
         }
+        const isPasswordValid = await bcrypt.compare(parsedData.data.oldPassword, user.password);
 
+        if (!isPasswordValid) {
+            return false
+        }
 
         const hashedPassword = await bcrypt.hash(parsedData.data.password, 13);
 
@@ -203,9 +206,8 @@ export async function changePassword(userId: string, data: { oldPassword: string
             data: {
                 password: hashedPassword
             },
-            where: { 
-                id: userId,
-                password : hashedOldPassword
+            where: {
+                id: userId
             }
         });
 
