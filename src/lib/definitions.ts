@@ -62,6 +62,21 @@ export const ChangeMailFormSchema = z.object({
 });
 
 export const ChangePasswordFormSchema = z.object({
+    oldPassword: z.string().trim(),
+    password: z
+        .string()
+        .min(8, { message: 'Password must be at least 8 characters long.' })
+        .regex(/[!@#$%^&*(),.?":{}|<>]/, { message: 'Password must contain at least one special character.' })
+        .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase character.' })
+        .regex(/[a-z]/, { message: 'Password must contain at least one lowercase character.' })
+        .trim(),
+    passwordConfirmation: z.string().trim(),
+}).refine((data) => data.password === data.passwordConfirmation, {
+    message: "Passwords don't match",
+    path: ["passwordConfirmation"],
+});
+
+export const ChangePasswordAdminFormSchema = z.object({
     password: z
         .string()
         .min(8, { message: 'Password must be at least 8 characters long.' })
@@ -80,7 +95,7 @@ export const EditRolesFormSchema = z.object({
 });
 
 export const CreateContainerFormSchema = z.object({
-    name: z.string().trim().regex(/^((?!-)[a-z0-9-]{3,63}(?<!-))$/,{message:'Name should be at least 3 characters and only contains letters, numbers. It can also contains hyphens but not in the start nor in the end.'}),
+    name: z.string().trim().regex(/^((?!-)[a-z0-9-]{3,63}(?<!-))$/, { message: 'Name should be at least 3 characters and only contains letters, numbers. It can also contains hyphens but not in the start nor in the end.' }),
     hostPort: z.number({ coerce: true }).int().min(1024, { message: 'Host port must be at least 1024.' }),
     memory: z.number({ coerce: true }).min(0, { message: 'Memory must be at least 0 Go.' }),
     cpu: z.number({ coerce: true }).min(0, { message: 'CPU must be at least 0.' }),

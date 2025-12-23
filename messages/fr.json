@@ -647,6 +647,10 @@
                 "description": "Changez le mot de passe de {name}.",
                 "form": {
                     "fields": {
+                        "oldPassword": {
+                            "label": "Ancien mot de passe",
+                            "placeholder": "Entrez l'ancien mot de passe"
+                        },
                         "password": {
                             "label": "Nouveau mot de passe",
                             "placeholder": "Entrez le nouveau mot de passe"

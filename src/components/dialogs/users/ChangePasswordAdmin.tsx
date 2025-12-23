@@ -1,10 +1,10 @@
-import { changePassword } from "@/actions/user";
+import { changePasswordAdmin } from "@/actions/user";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import { ChangePasswordFormSchema, UserLight } from "@/lib/definitions";
+import { ChangePasswordAdminFormSchema, UserLight } from "@/lib/definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -12,21 +12,21 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export default function ChangePassword({ user, children, open, setOpen }: { user: UserLight, children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ChangePasswordAdmin({ user, children, open, setOpen }: { user: UserLight, children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
     const t = useTranslations("dialogs.users.changePassword");
     const [loading, setLoading] = useState(false);
-    const form = useForm<z.infer<typeof ChangePasswordFormSchema>>({
-        resolver: zodResolver(ChangePasswordFormSchema),
+    const form = useForm<z.infer<typeof ChangePasswordAdminFormSchema>>({
+        resolver: zodResolver(ChangePasswordAdminFormSchema),
         defaultValues: {
             password: "",
             passwordConfirmation: ""
         }
     });
 
-    const submit = async (data: z.infer<typeof ChangePasswordFormSchema>) => {
+    const submit = async (data: z.infer<typeof ChangePasswordAdminFormSchema>) => {
         setLoading(true);
 
-        const r = await changePassword(user.id, data);
+        const r = await changePasswordAdmin(user.id, data);
 
         setLoading(false);
 
@@ -67,20 +67,6 @@ export default function ChangePassword({ user, children, open, setOpen }: { user
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(submit)} className="space-y-4">
-
-                        <FormField
-                            control={form.control}
-                            name="oldPassword"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('form.fields.oldPassword.label')}</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder={t('form.fields.oldPassword.placeholder')} type="password" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
 
                         <FormField
                             control={form.control}

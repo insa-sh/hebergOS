@@ -1,6 +1,6 @@
 'use server'
 
-import { ChangeMailFormSchema, ChangeNicknameFormSchema, ChangePasswordFormSchema, LinkContainersFormSchema, RegisterFormSchema, UserWithContainers } from "@/lib/definitions";
+import { ChangeMailFormSchema, ChangeNicknameFormSchema, ChangePasswordAdminFormSchema, ChangePasswordFormSchema, LinkContainersFormSchema, RegisterFormSchema, UserWithContainers } from "@/lib/definitions";
 import { prisma } from "@/lib/prisma";
 import { authConfig, isAdmin, isUser } from "@/lib/utils";
 import { Role } from "@prisma/client";
@@ -171,12 +171,56 @@ export async function changeMail(userId: string, data: { email: string }): Promi
     }
 }
 
-export async function changePassword(userId: string, data: { password: string, passwordConfirmation: string }): Promise<boolean> {
-    if (!(await isAdmin()) && !(await isUser(userId))) {
+export async function changePassword(userId: string, data: { oldPassword: string, password: string, passwordConfirmation: string }): Promise<boolean> {
+    if (!(await isUser(userId))) {
         return false;
     }
 
     const parsedData = ChangePasswordFormSchema.safeParse(data);
+
+    if (!parsedData.success) {
+        return false;
+    }
+
+    try {
+        const hashedOldPassword = await bcrypt.hash(parsedData.data.oldPassword, 13);
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId,
+                password : hashedOldPassword
+            }
+        });
+        
+        if (!user) { // Old password is wrong
+            return false
+        }
+
+
+        const hashedPassword = await bcrypt.hash(parsedData.data.password, 13);
+
+        await prisma.user.update({
+            data: {
+                password: hashedPassword
+            },
+            where: { 
+                id: userId,
+                password : hashedOldPassword
+            }
+        });
+
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export async function changePasswordAdmin(userId: string, data: { password: string, passwordConfirmation: string }): Promise<boolean> {
+    if (!(await isAdmin()) && !(await isUser(userId))) {
+        return false;
+    }
+
+    const parsedData = ChangePasswordAdminFormSchema.safeParse(data);
 
     if (!parsedData.success) {
         return false;

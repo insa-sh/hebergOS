@@ -15,9 +15,9 @@ import React from "react"
 import EditRoles from "../dialogs/users/EditRoles"
 import DeleteUser from "../dialogs/users/DeleteUser"
 import { Role } from "@prisma/client"
-import ChangePassword from "../dialogs/users/ChangePassword"
 import ChangeMail from "../dialogs/users/ChangeMail"
 import ChangeNickname from "../dialogs/users/ChangeNickname"
+import ChangePasswordAdmin from "../dialogs/users/ChangePasswordAdmin"
 
 export const usersColumns: ColumnDef<UserWithContainers>[] = [
     {
@@ -181,7 +181,7 @@ export const usersColumns: ColumnDef<UserWithContainers>[] = [
                     <EditRoles user={row.original} open={openEditRoles} setOpen={setOpenEditRoles} />
                     <ChangeNickname user={row.original} open={openChangeNickname} setOpen={setOpenChangeNickname} />
                     <ChangeMail user={row.original} open={openChangeMail} setOpen={setOpenChangeMail} />
-                    <ChangePassword user={row.original} open={openChangePassword} setOpen={setOpenChangePassword} />
+                    <ChangePasswordAdmin user={row.original} open={openChangePassword} setOpen={setOpenChangePassword} />
                     <DeleteUser user={row.original} open={openDeleteUser} setOpen={setOpenDeleteUser} />
                 </>
             )

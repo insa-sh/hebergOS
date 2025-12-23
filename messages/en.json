@@ -645,6 +645,10 @@
                 "description": "Set a new password for {name}.",
                 "form": {
                     "fields": {
+                        "oldPassword": {
+                            "label": "Previous Password",
+                            "placeholder": "Enter old password"
+                        },
                         "password": {
                             "label": "Password",
                             "placeholder": "Enter new password"
