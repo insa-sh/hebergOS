@@ -1,6 +1,6 @@
 'use client'
 
-import { Bell, Lock, LogOut, Mail, MessagesSquare, Shield, User } from "lucide-react";
+import { Bell, Lock, LogOut, Mail, MessagesSquare, Shield, Trash, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import Link from "next/link";
@@ -72,7 +72,7 @@ export default function UserDropdown({ user }: { user: UserLight }) {
                             <Lock /> {t('password')}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setOpenDeleteUser(true)}>
-                            <Lock /> {t('password')}
+                            <Trash /> {t('delete')}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={handleLogout}>
                             <LogOut /> {t('logout')}

@@ -232,6 +232,7 @@
                 "nickname": "Nom d'utilisateur",
                 "email": "Email",
                 "password": "Mot de passe",
+                "delete": "Supprimer le compte",
                 "logout": "Déconnexion"
             }
         }
