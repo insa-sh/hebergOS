@@ -14,7 +14,7 @@ import ChangeNickname from "./dialogs/users/ChangeNickname";
 import ChangeMail from "./dialogs/users/ChangeMail";
 import { UserLight } from "@/lib/definitions";
 
-export default async function UserDropdown({user}: {user : UserLight}) {
+export default function UserDropdown({user}: {user : UserLight}) {
 
     const t = useTranslations("components.users.userDropdown");
     const userRoles = user.userRoles.map((r) => r.role)
