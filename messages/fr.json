@@ -231,7 +231,7 @@
                 "messages": "Messages",
                 "nickname": "Nom d'utilisateur",
                 "email": "Email",
-                "password": "Mot de pase",
+                "password": "Mot de passe",
                 "logout": "Déconnexion"
             }
         }
