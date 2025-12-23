@@ -1,6 +1,6 @@
 'use client'
 
-import { Bell, Lock, LogOut, Mail, MessagesSquare, Shield, Trash, User } from "lucide-react";
+import { Bell, Lock, LogOut, Mail, MailCheck, MessagesSquare, Shield, Trash, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import Link from "next/link";
@@ -14,6 +14,7 @@ import ChangeNickname from "./dialogs/users/ChangeNickname";
 import ChangeMail from "./dialogs/users/ChangeMail";
 import { UserLight } from "@/lib/definitions";
 import DeleteUser from "./dialogs/users/DeleteUser";
+import { sendMail } from "@/actions/mail";
 
 export default function UserDropdown({ user }: { user: UserLight }) {
 
@@ -23,6 +24,10 @@ export default function UserDropdown({ user }: { user: UserLight }) {
 
     const handleLogout = async () => {
         signOut();
+    }
+
+    const handleMail = () => {
+        sendMail(user)
     }
 
     const [openMessages, setOpenMessages] = React.useState(false);
@@ -76,6 +81,9 @@ export default function UserDropdown({ user }: { user: UserLight }) {
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={handleLogout}>
                             <LogOut /> {t('logout')}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleMail}>
+                            <MailCheck /> {'Test Mail'}
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
