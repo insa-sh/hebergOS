@@ -88,6 +88,16 @@ export async function isAdmin() {
   return session.user.roles.includes(Role.ADMIN);
 }
 
+export async function isUser(id: string) {
+  const session = await getServerSession(authConfig);
+
+  if (!session) {
+    return false;
+  }
+
+  return session.user.id === id;
+}
+
 export async function canAccessContainer(containerId: string) {
   const session = await getServerSession(authConfig);
 
