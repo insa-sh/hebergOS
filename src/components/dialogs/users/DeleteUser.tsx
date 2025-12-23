@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { UserLight } from "@/lib/definitions";
 import { Loader2 } from "lucide-react";
+import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { SetStateAction } from "react";
@@ -41,6 +42,8 @@ export default function DeleteUser({ user, open, setOpen }: { user: UserLight, o
         if (setOpen) {
             setOpen(false);
         }
+
+        signOut()
     }
 
     return (

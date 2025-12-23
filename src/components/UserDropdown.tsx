@@ -4,7 +4,7 @@ import { Bell, Lock, LogOut, Mail, MessagesSquare, Shield, User } from "lucide-r
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import ContactMessages from "./dialogs/contact/ContactMessages";
 import React from "react";
@@ -13,8 +13,9 @@ import ChangePassword from "./dialogs/users/ChangePassword";
 import ChangeNickname from "./dialogs/users/ChangeNickname";
 import ChangeMail from "./dialogs/users/ChangeMail";
 import { UserLight } from "@/lib/definitions";
+import DeleteUser from "./dialogs/users/DeleteUser";
 
-export default function UserDropdown({user}: {user : UserLight}) {
+export default function UserDropdown({ user }: { user: UserLight }) {
 
     const t = useTranslations("components.users.userDropdown");
     const userRoles = user.userRoles.map((r) => r.role)
@@ -28,6 +29,7 @@ export default function UserDropdown({user}: {user : UserLight}) {
     const [openChangeNickname, setOpenChangeNickname] = React.useState(false);
     const [openChangeMail, setOpenChangeMail] = React.useState(false);
     const [openChangePassword, setOpenChangePassword] = React.useState(false);
+    const [openDeleteUser, setOpenDeleteUser] = React.useState(false);
 
     return (
         <>
@@ -69,6 +71,9 @@ export default function UserDropdown({user}: {user : UserLight}) {
                         <DropdownMenuItem onClick={() => setOpenChangePassword(true)}>
                             <Lock /> {t('password')}
                         </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setOpenDeleteUser(true)}>
+                            <Lock /> {t('password')}
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={handleLogout}>
                             <LogOut /> {t('logout')}
                         </DropdownMenuItem>
@@ -79,6 +84,7 @@ export default function UserDropdown({user}: {user : UserLight}) {
             <ChangePassword user={user!} open={openChangePassword} setOpen={setOpenChangePassword} />
             <ChangeNickname user={user!} open={openChangeNickname} setOpen={setOpenChangeNickname} />
             <ChangeMail user={user!} open={openChangeMail} setOpen={setOpenChangeMail} />
+            <DeleteUser user={user!} open={openDeleteUser} setOpen={setOpenDeleteUser} />
         </>
     )
 }

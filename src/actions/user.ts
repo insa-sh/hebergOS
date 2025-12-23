@@ -280,7 +280,7 @@ export async function editRoles(userId: string, roles: { roles: Role[] }): Promi
 }
 
 export async function deleteUser(userId: string): Promise<boolean> {
-    if (!(await isAdmin())) {
+    if (!(await isAdmin()) && !(await isUser(userId))) {
         return false;
     }
 
