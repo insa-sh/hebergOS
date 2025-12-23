@@ -12,15 +12,16 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { DotPattern } from "@/components/dot-pattern";
 import { cn } from "@/lib/utils";
 import DummyContainerActions from "@/components/dialogs/containers/DummyContainerActions";
+import { getMe } from "@/actions/user";
 
 export default async function Home() {
-
+  const user = await getMe()
   const t = await getTranslations('pages.home');
   const locale = await getLocale();
 
   return (
     <>
-      <Header className="translate-y-[-1rem] opacity-0 animate-fade-in [--animation-delay:600ms]" locale={locale} />
+      <Header className="translate-y-[-1rem] opacity-0 animate-fade-in [--animation-delay:600ms]" locale={locale} user={user}/>
       <main className="relative py-28 md:py-32">
         <DotPattern
           className={cn(

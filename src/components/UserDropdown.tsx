@@ -9,16 +9,16 @@ import { useTranslations } from "next-intl";
 import ContactMessages from "./dialogs/contact/ContactMessages";
 import React from "react";
 import { Role } from "@prisma/client";
-import { getMe } from "@/actions/user";
 import ChangePassword from "./dialogs/users/ChangePassword";
 import ChangeNickname from "./dialogs/users/ChangeNickname";
 import ChangeMail from "./dialogs/users/ChangeMail";
+import { UserLight } from "@/lib/definitions";
 
-export default async function UserDropdown() {
+export default async function UserDropdown({user}: {user : UserLight}) {
 
-    const user = await getMe();
     const t = useTranslations("components.users.userDropdown");
-    const userRoles = user?.userRoles.map((role) => (role.role))
+    const userRoles = user.userRoles.map((r) => r.role)
+
 
     const handleLogout = async () => {
         signOut();
@@ -46,7 +46,7 @@ export default async function UserDropdown() {
                         <DropdownMenuItem>
                             <Bell /> {t('notifications')}
                         </DropdownMenuItem>
-                        {userRoles?.includes(Role.ADMIN)
+                        {userRoles.includes(Role.ADMIN)
                             ? <DropdownMenuItem asChild>
                                 <Link href={"/app/administration"}>
                                     <Shield /> {t('administration')}
@@ -54,7 +54,7 @@ export default async function UserDropdown() {
                             </DropdownMenuItem>
                             : null
                         }
-                        {userRoles?.includes(Role.ADMIN)
+                        {userRoles.includes(Role.ADMIN)
                             ? <DropdownMenuItem onClick={() => setOpenMessages(true)}>
                                 <MessagesSquare /> {t('messages')}
                             </DropdownMenuItem>

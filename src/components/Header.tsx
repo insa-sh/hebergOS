@@ -11,8 +11,9 @@ import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import { authConfig, cn } from "@/lib/utils";
 import ChangeLocale from "./ChangeLocale";
+import { UserLight } from "@/lib/definitions";
 
-export default async function Header({ className, locale }: { className?: string, locale: string }) {
+export default async function Header({ className, locale, user }: { className?: string, locale: string, user: UserLight | null }) {
     const headerList = headers();
 
     const session = await getServerSession(authConfig);
@@ -27,7 +28,7 @@ export default async function Header({ className, locale }: { className?: string
         )}>
             {/* <Image src={"/favicon.png"} alt="HebergOS" width={48} height={48} /> */}
             <h1 className={`${robotoMono.className} font-bold text-2xl`}>
-                {session?.user
+                {user
                     ? <Link href={"/app"}><AppName /></Link>
                     : <Link href={"/"}><AppName /></Link>
                 }
@@ -35,37 +36,32 @@ export default async function Header({ className, locale }: { className?: string
             <h1 className={`hidden md:block ${robotoMono.className} antialiased text-center text-xl text-primary`}>./insa.sh</h1>
             <div>
                 <div className="hidden md:flex justify-end items-center gap-4 text-xl">
-                    {!session?.user
+                    {!user
                         ? <>
                             <ContactUsCta variant={"outline"} />
-                            <Button asChild><Link href={"/login"} className="text-lg"><LogIn className="w-6 h-6" /> { t('login') }</Link></Button>
+                            <Button asChild><Link href={"/login"} className="text-lg"><LogIn className="w-6 h-6" /> {t('login')}</Link></Button>
                         </>
                         : null
                     }
-                    {session?.user && isOnLandingPage
+                    {user && isOnLandingPage
                         ? <Button variant={"link"}><Link href={"/app"}>{t('goToApp')}</Link></Button>
                         : null
                     }
-                    {session?.user && !isOnLandingPage
-                        ? <UserDropdown />
+                    {user && !isOnLandingPage
+                        ? <UserDropdown user={user}/>
                         : null
                     }
                     <ChangeLocale locale={locale} />
                 </div>
 
                 <div className="md:hidden flex justify-end items-center gap-4 text-xl">
-                    {!session?.user
+                    {!user
                         ? <>
                             <ContactUsCta variant={"outline"} className="hidden md:block" />
-                            <Button asChild><Link href={"/login"} className="text-lg"><LogIn className="w-6 h-6" /> { t('login') }</Link></Button>
+                            <Button asChild><Link href={"/login"} className="text-lg"><LogIn className="w-6 h-6" /> {t('login')}</Link></Button>
                         </>
-                        : null
+                        : <UserDropdown user={user}/>
                     }
-                    {session?.user
-                        ? <UserDropdown />
-                        : null
-                    }
-
                     <ChangeLocale locale={locale} />
                 </div>
             </div>

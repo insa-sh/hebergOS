@@ -13,7 +13,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export default function ChangePassword({ user, children, open, setOpen }: { user: UserLight, children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
-
     const t = useTranslations("dialogs.users.changePassword");
     const [loading, setLoading] = useState(false);
     const form = useForm<z.infer<typeof ChangePasswordFormSchema>>({
