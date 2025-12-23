@@ -6,24 +6,20 @@
             "catchLine": "La solution d'hébergement pour les étudiants <br /> de l'INSA Hauts-de-France",
             "description": "Déployez vos applications web en quelques clics.<br />HebergOS abstrait la complexité de l'hébergement et vous laisse vous concentrer sur l'essentiel.",
             "contact": "Contactez-nous",
-
             "section1": {
                 "title": "Partagez nous vos idées et créeons ensemble votre solution",
                 "description": "Contactez-nous pour discuter de vos besoins et de vos envies. Préparons la meilleure solution, adaptée à vos projets."
             },
-
             "section2": {
                 "title": "Gérez vos applications en toute simplicité",
                 "description": "Démarrez, arrêtez, redémarrez vos conteneurs en deux clics directement ou accédez à la console de vos conteneurs directement depuis l'interface de l'application."
             },
-
             "section3": {
                 "title": "Gardez un oeil sur vos applications en temps réel",
                 "description": "HebergOS vous permet de surveiller l'état de vos applications en temps réel. Vous pouvez voir les statistiques d'utilisation de vos conteneurs et observer la réponses de vos applications en fonction du traffic.",
                 "link": "Monitor",
                 "widgetTitle": "Statistiques d'utilisation"
             },
-
             "faq": {
                 "title": "Questions fréquentes",
                 "questions": {
@@ -233,6 +229,9 @@
                 "notifications": "Notifications",
                 "administration": "Administration",
                 "messages": "Messages",
+                "nickname": "Nom d'utilisateur",
+                "email": "Email",
+                "password": "Mot de pase",
                 "logout": "Déconnexion"
             }
         }
@@ -821,7 +820,7 @@
                 "nickname": "Nom d'utilisateur",
                 "email": "Email",
                 "containers": "Conteneurs",
-                "otherContainers":"Autres conteneurs",
+                "otherContainers": "Autres conteneurs",
                 "roles": "Rôles",
                 "actions": "Actions"
             },

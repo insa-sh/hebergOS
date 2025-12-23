@@ -229,6 +229,9 @@
                 "notifications": "Notifications",
                 "administration": "Administration",
                 "messages": "Messages",
+                "nickname": "Username",
+                "email": "Email",
+                "password": "Password",
                 "logout": "Logout"
             }
         }

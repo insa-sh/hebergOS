@@ -2,7 +2,7 @@
 
 import { ChangeMailFormSchema, ChangeNicknameFormSchema, ChangePasswordFormSchema, LinkContainersFormSchema, RegisterFormSchema, UserWithContainers } from "@/lib/definitions";
 import { prisma } from "@/lib/prisma";
-import { authConfig, isAdmin } from "@/lib/utils";
+import { authConfig, isAdmin, isUser } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import bcrypt from 'bcryptjs';
@@ -120,7 +120,7 @@ export async function linkContainers(userId: string, containers: { containers: s
 }
 
 export async function changeNickname(userId: string, data: { nickname: string }): Promise<boolean> {
-    if (!(await isAdmin())) {
+    if (!(await isAdmin()) && !(await isUser(userId))) {
         return false;
     }
 
@@ -146,7 +146,7 @@ export async function changeNickname(userId: string, data: { nickname: string })
 }
 
 export async function changeMail(userId: string, data: { email: string }): Promise<boolean> {
-    if (!(await isAdmin())) {
+    if (!(await isAdmin()) && !(await isUser(userId))) {
         return false;
     }
 
@@ -172,7 +172,7 @@ export async function changeMail(userId: string, data: { email: string }): Promi
 }
 
 export async function changePassword(userId: string, data: { password: string, passwordConfirmation: string }): Promise<boolean> {
-    if (!(await isAdmin())) {
+    if (!(await isAdmin()) && !(await isUser(userId))) {
         return false;
     }
 
