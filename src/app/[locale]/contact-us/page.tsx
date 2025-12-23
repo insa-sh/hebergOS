@@ -1,3 +1,4 @@
+import { getMe } from "@/actions/user";
 import Caribou from "@/components/Caribou";
 import ContactForm from "@/components/ContactForm";
 import Header from "@/components/Header";
@@ -9,10 +10,11 @@ export default async function ContactUs() {
 
     const t = await getTranslations("pages.contact");
     const locale = await getLocale();
+    const user = await getMe();
 
     return (
         <>
-            <Header locale={locale} />
+            <Header locale={locale} user={user} />
             <main className="min-h-screen mx-auto grid grid-cols-1 grid-rows-[1fr_auto_1fr] md:grid-cols-[1fr_auto_1fr] md:grid-rows-1 md:gap-8">
                 <div className="relative h-full overflow-hidden">
                     <div className="mt-32 md:mt-64 max-w-lg mx-auto px-3 md:px-0 z-40">
