@@ -172,7 +172,7 @@ export const usersColumns: ColumnDef<UserWithContainers>[] = [
                             <DropdownMenuItem onClick={() => setOpenEditRoles(true)}>{t('editRoles')}</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setOpenChangeNickname(true)}>{t('changeNickname')}</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setOpenChangeMail(true)}>{t('changeMail')}</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setSendPasswordReset(true)}>{t('changePassword')}</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setSendPasswordReset(true)}>{t('resetLink')}</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => setOpenDeleteUser(true)} className="font-semibold text-red-500 focus:text-red-500">{t('delete')}</DropdownMenuItem>
                         </DropdownMenuContent>
