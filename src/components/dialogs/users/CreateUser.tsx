@@ -28,8 +28,6 @@ export default function CreateUserDialog({ children }: { children: React.ReactNo
             name: "",
             email: "",
             nickname: "",
-            password: "",
-            passwordConfirmation: "",
             roles: ["USER"],
         }
     });
@@ -150,32 +148,6 @@ export default function CreateUserDialog({ children }: { children: React.ReactNo
                                     <FormLabel>{t('form.fields.email.label')}</FormLabel>
                                     <FormControl>
                                         <Input placeholder={t('form.fields.email.placeholder')} {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('form.fields.password.label')}</FormLabel>
-                                    <FormControl>
-                                        <Input type="password" placeholder={t('form.fields.password.placeholder')} {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="passwordConfirmation"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('form.fields.passwordConfirmation.label')}</FormLabel>
-                                    <FormControl>
-                                        <Input type="password" placeholder={t('form.fields.passwordConfirmation.placeholder')} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

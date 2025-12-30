@@ -1,6 +1,6 @@
 'use server'
 
-import { ChangeMailFormSchema, ChangeNicknameFormSchema, ChangePasswordAdminFormSchema, ChangePasswordFormSchema, LinkContainersFormSchema, RegisterFormSchema, UserWithContainers } from "@/lib/definitions";
+import { ChangeMailFormSchema, ChangeNicknameFormSchema, ChangePasswordFormSchema, LinkContainersFormSchema, RegisterFormSchema, ResetFormSchema, UserWithContainers } from "@/lib/definitions";
 import { prisma } from "@/lib/prisma";
 import { authConfig, isAdmin, isUser } from "@/lib/utils";
 import { Role } from "@prisma/client";
@@ -8,6 +8,8 @@ import { getServerSession } from "next-auth";
 import bcrypt from 'bcryptjs';
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { revalidatePath } from "next/cache";
+import { v4 as uuidv4 } from "uuid"
+import { sendPasswordReset } from "./mail";
 
 export async function getMe(): Promise<UserWithContainers | null> {
     const session = await getServerSession(authConfig);
@@ -48,7 +50,7 @@ export async function getUsers(): Promise<UserWithContainers[]> {
     return users;
 }
 
-export async function createUser(data: { name: string, email: string, nickname: string, password: string, passwordConfirmation: string, roles: Role[] }): Promise<{ error?: string }> {
+export async function createUser(data: { name: string, email: string, nickname: string, roles: Role[] }): Promise<{ error?: string }> {
     if (!(await isAdmin())) {
         return { error: 'not-authorized' };
     }
@@ -59,22 +61,33 @@ export async function createUser(data: { name: string, email: string, nickname: 
         return { error: 'invalid-data' };
     }
 
-    const { name, email, nickname, password, roles } = parsedData.data;
+    const { name, email, nickname, roles } = parsedData.data;
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 13);
+        const resetToken = uuidv4();
+        const expireDate = new Date(new Date().getTime() + 3 * 60 * 60 * 1000); // Valid 3 hours
 
         await prisma.user.create({
             data: {
                 name: name,
                 email: email,
                 nickname: nickname,
-                password: hashedPassword,
+                password: "",
                 userRoles: {
                     create: roles.map(r => ({ role: r }))
+                },
+                passwordResetRequest: {
+                    create: {
+                        token: resetToken,
+                        expires: expireDate
+                    }
                 }
             }
         });
+
+        if (!(await sendPasswordReset(resetToken, {name : name, email : email}))) {
+            return {error: 'mail-error'}
+        }
 
         revalidatePath("/app/administration");
         return { error: undefined };
@@ -171,6 +184,135 @@ export async function changeMail(userId: string, data: { email: string }): Promi
     }
 }
 
+export async function createResetLink(userId: string): Promise<boolean> {
+    if (!isAdmin()) {
+        return false;
+    }
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId
+            }, select: {
+                email: true,
+                name: true
+            }
+        });
+
+        if (!user) {
+            return false;
+        }
+
+        const resetToken = uuidv4();
+        const expireDate = new Date(new Date().getTime() + 3 * 60 * 60 * 1000); // Valid 3 hours
+
+        await prisma.user.update({
+            data: {
+                passwordResetRequest: {
+                    create: {
+                        token: resetToken,
+                        expires: expireDate
+                    }
+                }
+            },
+            where: {
+                id: userId
+            }
+        });
+
+        if (!(await sendPasswordReset(resetToken, user))) {
+            return false
+        }
+
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+export async function isTokenValid(resetToken: string): Promise<boolean> {
+    try {
+        const request = await prisma.passwordResetRequest.findUnique({
+            where: {
+                token: resetToken
+            }, select: {
+                expires: true
+            }
+        });
+
+        if (!request) {
+            return false;
+        }
+
+        if (request.expires > new Date()) {
+            await prisma.passwordResetRequest.delete({
+                where: {
+                    token: resetToken
+                }
+            });
+
+            return false;
+        }
+
+        return true;
+    } catch {
+        return false
+    }
+}
+
+export async function resetPassword(resetToken: string, data: { password: string, passwordConfirmation: string }): Promise<boolean> {
+    try {
+        const request = await prisma.passwordResetRequest.findUnique({
+            where: {
+                token: resetToken
+            }, select: {
+                userId: true,
+                expires: true
+            }
+        });
+
+        if (!request) {
+            return false;
+        }
+
+        if (request.expires > new Date()) {
+            await prisma.passwordResetRequest.delete({
+                where: {
+                    token: resetToken
+                }
+            })
+
+            return false;
+        }
+
+        const parsedData = ResetFormSchema.safeParse(data);
+
+        if (!parsedData.success) {
+            return false;
+        }
+
+        const hashedPassword = await bcrypt.hash(parsedData.data.password, 13);
+
+        await prisma.user.update({
+            data: {
+                password: hashedPassword
+            },
+            where: {
+                id: request.userId
+            }
+        });
+
+        await prisma.passwordResetRequest.delete({
+            where: {
+                token: resetToken
+            }
+        })
+
+        return true;
+    } catch {
+        return false
+    }
+}
+
 export async function changePassword(userId: string, data: { oldPassword: string, password: string, passwordConfirmation: string }): Promise<boolean> {
     if (!(await isUser(userId))) {
         return false;
@@ -186,12 +328,12 @@ export async function changePassword(userId: string, data: { oldPassword: string
         const user = await prisma.user.findUnique({
             where: {
                 id: userId
-            },select: {
-                password : true
+            }, select: {
+                password: true
             }
         });
 
-        if (!user) { 
+        if (!user) {
             return false
         }
         const isPasswordValid = await bcrypt.compare(parsedData.data.oldPassword, user.password);
@@ -209,33 +351,6 @@ export async function changePassword(userId: string, data: { oldPassword: string
             where: {
                 id: userId
             }
-        });
-
-        return true;
-    } catch {
-        return false;
-    }
-}
-
-export async function changePasswordAdmin(userId: string, data: { password: string, passwordConfirmation: string }): Promise<boolean> {
-    if (!(await isAdmin()) && !(await isUser(userId))) {
-        return false;
-    }
-
-    const parsedData = ChangePasswordAdminFormSchema.safeParse(data);
-
-    if (!parsedData.success) {
-        return false;
-    }
-
-    try {
-        const hashedPassword = await bcrypt.hash(parsedData.data.password, 13);
-
-        await prisma.user.update({
-            data: {
-                password: hashedPassword
-            },
-            where: { id: userId }
         });
 
         return true;

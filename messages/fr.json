@@ -175,6 +175,11 @@
                 "searchContainers": "Filtrer les conteneurs",
                 "createContainer": "Créer un conteneur",
                 "otherContainers": "Autres conteneurs"
+            },
+            "reset": {
+                "title": "Mauvais lien de réinitialisation",
+                "description": "Votre demande de réinitialisation de mot de passe est invalide ou a expiré. Veuillez demander à un administrateur pour un nouveau lien",
+                "homepage": "Retour vers l'accueil"
             }
         }
     },
@@ -205,6 +210,35 @@
                     }
                 },
                 "error": "Nom d'utilisateur ou mot de passe incorrect"
+            },
+            "reset": {
+                "title": "Réinitialisation",
+                "description": "Entrez un nouveau mot de passe pour finaliser la réinitialisation de mot de passe",
+                "form": {
+                    "fields": {
+                        "password": {
+                            "label": "Nouveau mot de passe",
+                            "placeholder": "Entrez votre mot de passe"
+                        },
+                        "passwordConfirmation": {
+                            "label": "Répetez le nouveau mot de passe",
+                            "placeholder": "Entrez votre mot de passe"
+                        }
+                    },
+                    "actions": {
+                        "submit": "Valider",
+                        "submitting": "Validation..."
+                    },
+                    "error": {
+                        "title": "Erreur lors de la réinitialisation",
+                        "description": "Une erreur est survenue lors de la réinitialisation du mot de passe. Veuillez réessayer."
+                    },
+                    "success": {
+                        "title": "Mot de passe réinitialisé",
+                        "description": "Le mot de passe a été réinitialisé avec succès."
+                    }
+                },
+                "error": "Password not valid"
             }
         },
         "containers": {
@@ -583,6 +617,10 @@
                         "title": "Données invalides",
                         "description": "Les données fournies sont invalides. Veuillez vérifier les champs et réessayer."
                     },
+                    "mailError": {
+                        "title": "Envoi échoué",
+                        "description": "L'envoi du lien a échoué. Veuillez réessayer ultérieurement"
+                    },
                     "unknown": {
                         "title": "Erreur lors de la création de l'utilisateur",
                         "description": "Une erreur est survenue lors de la création de l'utilisateur. Veuillez réessayer."
@@ -663,7 +701,7 @@
                     }
                 },
                 "actions": {
-                    "submit": "Changer",
+                    "submit": "Changé",
                     "submitting": "Changement...",
                     "cancel": "Annuler"
                 },
@@ -674,6 +712,23 @@
                 "success": {
                     "title": "Mot de passe changé",
                     "description": "Le mot de passe a été changé avec succès."
+                }
+            },
+            "resetLink": {
+                "title": "Envoyer un lien de réinitialisation de mot de passe",
+                "description": "Envoyer un lien à {name}.",
+                "actions": {
+                    "submit": "Envoyé",
+                    "submitting": "Envoi...",
+                    "cancel": "Annuler"
+                },
+                "error": {
+                    "title": "Erreur lors de l'envoi du lien",
+                    "description": "Une erreur est survenue lors de l'envoi du lien. Veuillez réessayer."
+                },
+                "success": {
+                    "title": "Lien envoyé",
+                    "description": "Le lien a été envoyé avec succès"
                 }
             },
             "linkContainers": {

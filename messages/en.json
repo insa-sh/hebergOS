@@ -175,6 +175,11 @@
                 "searchContainers": "Filter containers",
                 "createContainer": "Create a container",
                 "otherContainers": "Other containers"
+            },
+            "reset": {
+                "title" : "Wrong reset link",
+                "description": "Your password reset request is invalid or expired. Ask an administrator for a new link",
+                "homepage": "Back to homepage"
             }
         }
     },
@@ -205,6 +210,35 @@
                     }
                 },
                 "error": "Invalid username or password"
+            },
+            "reset": {
+                "title": "Reset",
+                "description": "Enter a new password to complete the password reset",
+                "form": {
+                    "fields": {
+                        "password": {
+                            "label": "New password",
+                            "placeholder": "Enter new username"
+                        },
+                        "passwordConfirmation": {
+                            "label": "Repeat new password",
+                            "placeholder": "Enter new password"
+                        }
+                    },
+                    "actions": {
+                        "submit": "Submit",
+                        "submitting": "Submitting..."
+                    },
+                    "error": {
+                        "title": "Error",
+                        "description": "An error occurred while resetting the password. Please try again later."
+                    },
+                    "success": {
+                        "title": "Password reseted",
+                        "description": "The password has been reset successfully."
+                    }
+                },
+                "error": "Password not valid"
             }
         },
         "containers": {
@@ -581,9 +615,13 @@
                         "title": "Invalid data",
                         "description": "The data you entered is invalid. Please check the form."
                     },
+                    "mailError": {
+                        "title": "Email failed",
+                        "description": "The sending of the link has failed. Please try again later."
+                    },
                     "unknown": {
-                        "title": "Erreur lors de la création de l'utilisateur",
-                        "description": "Une erreur est survenue lors de la création de l'utilisateur. Veuillez réessayer."
+                        "title": "Error while creating the user",
+                        "description": "An error occurred while creating the user. Please try again later."
                     }
                 },
                 "success": {
@@ -647,16 +685,16 @@
                 "form": {
                     "fields": {
                         "oldPassword": {
-                            "label": "Previous Password",
+                            "label": "Old password",
                             "placeholder": "Enter old password"
                         },
                         "password": {
-                            "label": "Password",
+                            "label": "New password",
                             "placeholder": "Enter new password"
                         },
                         "passwordConfirmation": {
-                            "label": "Password confirmation",
-                            "placeholder": "Confirm new password"
+                            "label": "Repeat new password",
+                            "placeholder": "Enter new password"
                         }
                     }
                 },
@@ -672,6 +710,23 @@
                 "success": {
                     "title": "Password set",
                     "description": "The password has been set successfully."
+                }
+            },
+            "resetLink": {
+                "title": "Send a password reset link",
+                "description": "Send a link to {name}.",
+                "actions": {
+                    "submit": "Send",
+                    "submitting": "Sending...",
+                    "cancel": "Cancel"
+                },
+                "error": {
+                    "title": "Error",
+                    "description": "An error occurred while sending the link. Please try again later."
+                },
+                "success": {
+                    "title": "Link send",
+                    "description": "The link has been send successfully."
                 }
             },
             "linkContainers": {

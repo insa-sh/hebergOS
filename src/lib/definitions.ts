@@ -24,6 +24,10 @@ export const RegisterFormSchema = z.object({
     name: z.string().min(3, { message: 'Name must be at least 3 characters long.' }).trim(),
     email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
     nickname: z.string().min(3, { message: 'Nickname must be at least 3 characters long.' }).trim(),
+    roles: z.array(z.nativeEnum(Role)).default([Role.USER]),
+});
+
+export const ResetFormSchema = z.object({
     password: z
         .string()
         .min(8, { message: 'Password must be at least 8 characters long.' })
@@ -31,8 +35,7 @@ export const RegisterFormSchema = z.object({
         .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase character.' })
         .regex(/[a-z]/, { message: 'Password must contain at least one lowercase character.' })
         .trim(),
-    passwordConfirmation: z.string().trim(),
-    roles: z.array(z.nativeEnum(Role)).default([Role.USER]),
+    passwordConfirmation: z.string().trim()
 }).refine((data) => data.password === data.passwordConfirmation, {
     message: "Passwords don't match",
     path: ["passwordConfirmation"],
@@ -76,19 +79,6 @@ export const ChangePasswordFormSchema = z.object({
     path: ["passwordConfirmation"],
 });
 
-export const ChangePasswordAdminFormSchema = z.object({
-    password: z
-        .string()
-        .min(8, { message: 'Password must be at least 8 characters long.' })
-        .regex(/[!@#$%^&*(),.?":{}|<>]/, { message: 'Password must contain at least one special character.' })
-        .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase character.' })
-        .regex(/[a-z]/, { message: 'Password must contain at least one lowercase character.' })
-        .trim(),
-    passwordConfirmation: z.string().trim(),
-}).refine((data) => data.password === data.passwordConfirmation, {
-    message: "Passwords don't match",
-    path: ["passwordConfirmation"],
-});
 
 export const EditRolesFormSchema = z.object({
     roles: z.array(z.nativeEnum(Role)).default([Role.USER]),

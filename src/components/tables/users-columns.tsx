@@ -17,7 +17,7 @@ import DeleteUser from "../dialogs/users/DeleteUser"
 import { Role } from "@prisma/client"
 import ChangeMail from "../dialogs/users/ChangeMail"
 import ChangeNickname from "../dialogs/users/ChangeNickname"
-import ChangePasswordAdmin from "../dialogs/users/ChangePasswordAdmin"
+import ResetPassword from "../dialogs/users/ResetPassword"
 
 export const usersColumns: ColumnDef<UserWithContainers>[] = [
     {
@@ -153,7 +153,7 @@ export const usersColumns: ColumnDef<UserWithContainers>[] = [
             const [openEditContainers, setOpenEditContainers] = React.useState(false);
             const [openEditRoles, setOpenEditRoles] = React.useState(false);
             const [openChangeNickname, setOpenChangeNickname] = React.useState(false);
-            const [openChangePassword, setOpenChangePassword] = React.useState(false);
+            const [openPasswordReset, setSendPasswordReset] = React.useState(false);
             const [openChangeMail, setOpenChangeMail] = React.useState(false);
             const [openDeleteUser, setOpenDeleteUser] = React.useState(false);
 
@@ -172,7 +172,7 @@ export const usersColumns: ColumnDef<UserWithContainers>[] = [
                             <DropdownMenuItem onClick={() => setOpenEditRoles(true)}>{t('editRoles')}</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setOpenChangeNickname(true)}>{t('changeNickname')}</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setOpenChangeMail(true)}>{t('changeMail')}</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setOpenChangePassword(true)}>{t('changePassword')}</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setSendPasswordReset(true)}>{t('changePassword')}</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => setOpenDeleteUser(true)} className="font-semibold text-red-500 focus:text-red-500">{t('delete')}</DropdownMenuItem>
                         </DropdownMenuContent>
@@ -181,7 +181,7 @@ export const usersColumns: ColumnDef<UserWithContainers>[] = [
                     <EditRoles user={row.original} open={openEditRoles} setOpen={setOpenEditRoles} />
                     <ChangeNickname user={row.original} open={openChangeNickname} setOpen={setOpenChangeNickname} />
                     <ChangeMail user={row.original} open={openChangeMail} setOpen={setOpenChangeMail} />
-                    <ChangePasswordAdmin user={row.original} open={openChangePassword} setOpen={setOpenChangePassword} />
+                    <ResetPassword user={row.original} open={openPasswordReset} setOpen={setSendPasswordReset} />
                     <DeleteUser user={row.original} open={openDeleteUser} setOpen={setOpenDeleteUser} />
                 </>
             )
