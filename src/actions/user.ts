@@ -243,7 +243,7 @@ export async function isTokenValid(resetToken: string): Promise<boolean> {
             return false;
         }
 
-        if (request.expires > new Date()) {
+        if (request.expires < new Date()) {
             await prisma.passwordResetRequest.delete({
                 where: {
                     token: resetToken
@@ -274,7 +274,7 @@ export async function resetPassword(resetToken: string, data: { password: string
             return false;
         }
 
-        if (request.expires > new Date()) {
+        if (request.expires < new Date()) {
             await prisma.passwordResetRequest.delete({
                 where: {
                     token: resetToken

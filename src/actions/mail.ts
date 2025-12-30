@@ -13,7 +13,7 @@ const transporter = createTransport({
         user: SMTP_USER,
         pass: SMTP_PASS
     },
-    secure: true
+    secure: false
 }, {
     from: `HebergOS <${SMTP_FROM}>`
 })

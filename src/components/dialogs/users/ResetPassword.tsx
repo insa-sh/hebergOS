@@ -62,7 +62,7 @@ export default function ResetPassword({ user, children, open, setOpen }: { user:
                     </DialogClose>
                     {loading
                         ? <Button disabled><Loader2 className="animate-spin" /> {t('actions.submitting')}</Button>
-                        : <Button type="submit">{t('actions.submit')}</Button>
+                        : <Button type="submit" onClick={submit}>{t('actions.submit')}</Button>
                     }
                 </DialogFooter>
             </DialogContent>

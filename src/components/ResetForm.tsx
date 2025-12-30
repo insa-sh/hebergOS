@@ -30,10 +30,12 @@ export default function ResetForm(params: { token: string }) {
     const onSubmit = async (data: { password: string, passwordConfirmation: string }) => {
         setLoading(true);
         const r = await resetPassword(params.token, data)
+        setLoading(false);
+        
         if (!r) {
             toast({
-                title: "form.error.title",
-                description: "form.error.message",
+                title: t('form.error.title'),
+                description: t('form.error.message'),
                 variant: "destructive"
             });
             return
@@ -45,7 +47,6 @@ export default function ResetForm(params: { token: string }) {
         });
 
         redirect("/")
-        setLoading(false);
     };
 
     return (

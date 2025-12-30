@@ -701,7 +701,7 @@
                     }
                 },
                 "actions": {
-                    "submit": "Changé",
+                    "submit": "Changer",
                     "submitting": "Changement...",
                     "cancel": "Annuler"
                 },
@@ -718,7 +718,7 @@
                 "title": "Envoyer un lien de réinitialisation de mot de passe",
                 "description": "Envoyer un lien à {name}.",
                 "actions": {
-                    "submit": "Envoyé",
+                    "submit": "Envoyer",
                     "submitting": "Envoi...",
                     "cancel": "Annuler"
                 },
@@ -890,7 +890,7 @@
                 "editRoles": "Modifier les rôles",
                 "changeNickname": "Changer le nom d'utilisateur",
                 "changeMail": "Changer l'email",
-                "changePassword": "Changer le mot de passe",
+                "resetLink": "Envoyer une réinitialisaion de mot de passe",
                 "delete": "Supprimer"
             }
         },
