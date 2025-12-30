@@ -76,6 +76,7 @@ model User {
   accounts               Account[]
   sessions               Session[]
   ContainerNotifications Notification[]
+  passwordResetRequest   PasswordResetRequest?
 }
 
 model Container {
@@ -157,6 +158,18 @@ model VerificationRequest {
   updatedAt  DateTime @updatedAt
 
   @@unique([identifier, token])
+}
+
+model PasswordResetRequest {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([id, token])
 }
 
 model UserRole {
