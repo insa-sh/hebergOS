@@ -14,7 +14,6 @@ import ChangeNickname from "./dialogs/users/ChangeNickname";
 import ChangeMail from "./dialogs/users/ChangeMail";
 import { UserLight } from "@/lib/definitions";
 import DeleteUser from "./dialogs/users/DeleteUser";
-import { sendMail } from "@/actions/mail";
 
 export default function UserDropdown({ user }: { user: UserLight }) {
 
@@ -26,9 +25,7 @@ export default function UserDropdown({ user }: { user: UserLight }) {
         signOut();
     }
 
-    const handleMail = () => {
-        sendMail(user)
-    }
+
 
     const [openMessages, setOpenMessages] = React.useState(false);
     const [openChangeNickname, setOpenChangeNickname] = React.useState(false);
@@ -82,9 +79,7 @@ export default function UserDropdown({ user }: { user: UserLight }) {
                         <DropdownMenuItem onClick={handleLogout}>
                             <LogOut /> {t('logout')}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={handleMail}>
-                            <MailCheck /> {'Test Mail'}
-                        </DropdownMenuItem>
+
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu >
