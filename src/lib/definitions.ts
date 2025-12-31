@@ -1,4 +1,5 @@
 import { NotificationType, Prisma, Role } from "@prisma/client";
+import { DefaultSession } from "next-auth";
 import { z } from "zod";
 
 export type ClientContainerStat = {
@@ -12,6 +13,14 @@ export type ClientContainerStat = {
     netDeltaUp: number;
     netDeltaDown: number;
 }
+
+export type SessionUser = {
+    name: string;
+    email: string;
+    id: string;
+    nickname : string;
+    roles: string[];
+} & DefaultSession 
 
 export const SignInFormSchema = z.object({
     nickname: z.string().trim(),

@@ -11,7 +11,7 @@ import { Input } from "./ui/input";
 import { ResetFormSchema } from "@/lib/definitions";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { resetPassword } from "@/actions/user";
 
 export default function ResetForm(params: { token: string }) {
@@ -31,7 +31,7 @@ export default function ResetForm(params: { token: string }) {
         setLoading(true);
         const r = await resetPassword(params.token, data)
         setLoading(false);
-        
+
         if (!r) {
             toast({
                 title: t('form.error.title'),

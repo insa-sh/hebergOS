@@ -11,12 +11,12 @@ import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import { authConfig, cn } from "@/lib/utils";
 import ChangeLocale from "./ChangeLocale";
-import { UserLight } from "@/lib/definitions";
 
-export default async function Header({ className, locale, user }: { className?: string, locale: string, user: UserLight | null }) {
+export default async function Header({ className, locale }: { className?: string, locale: string }) {
     const headerList = headers();
 
     const session = await getServerSession(authConfig);
+    const user = session?.user
     const isOnLandingPage = new RegExp(`^\/(${routing.locales.join('|')})(/contact-us)?$`).test((await headerList).get("X-Current-Path") || '');
     const t = await getTranslations('components.header');
 
@@ -48,7 +48,7 @@ export default async function Header({ className, locale, user }: { className?: 
                         : null
                     }
                     {user && !isOnLandingPage
-                        ? <UserDropdown user={user}/>
+                        ? <UserDropdown />
                         : null
                     }
                     <ChangeLocale locale={locale} />
@@ -60,7 +60,7 @@ export default async function Header({ className, locale, user }: { className?: 
                             <ContactUsCta variant={"outline"} className="hidden md:block" />
                             <Button asChild><Link href={"/login"} className="text-lg"><LogIn className="w-6 h-6" /> {t('login')}</Link></Button>
                         </>
-                        : <UserDropdown user={user}/>
+                        : <UserDropdown />
                     }
                     <ChangeLocale locale={locale} />
                 </div>

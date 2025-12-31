@@ -4,7 +4,6 @@ import { robotoMono } from "@/ui/fonts";
 import { ContainerWithActivity, ContainerWithUsers } from "@/lib/definitions";
 import ActivitiesCard from "./ActivitiesCard";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import LinkContainers from "../dialogs/users/LinkContainers";
 import { Button } from "../ui/button";
 import LinkUsers from "../dialogs/containers/LinkUsers";
 import { UserRoundPlus } from "lucide-react";

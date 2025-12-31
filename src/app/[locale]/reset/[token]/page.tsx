@@ -17,7 +17,7 @@ export default async function ResetPage({ params }: { params: Promise<{ locale: 
 
   return (
     <>
-      <Header locale={locale} user={null} />
+      <Header locale={locale} />
       <main className="flex items-center justify-center h-screen">
         <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
           <Suspense>

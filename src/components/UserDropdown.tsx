@@ -1,10 +1,10 @@
 'use client'
 
-import { Bell, Lock, LogOut, Mail, MailCheck, MessagesSquare, Shield, Trash, User } from "lucide-react";
+import { Bell, Lock, LogOut, Mail, MessagesSquare, Shield, Trash, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import ContactMessages from "./dialogs/contact/ContactMessages";
 import React from "react";
@@ -12,13 +12,14 @@ import { Role } from "@prisma/client";
 import ChangePassword from "./dialogs/users/ChangePassword";
 import ChangeNickname from "./dialogs/users/ChangeNickname";
 import ChangeMail from "./dialogs/users/ChangeMail";
-import { UserLight } from "@/lib/definitions";
+import { SessionUser } from "@/lib/definitions";
 import DeleteUser from "./dialogs/users/DeleteUser";
 
-export default function UserDropdown({ user }: { user: UserLight }) {
+export default function UserDropdown() {
 
     const t = useTranslations("components.users.userDropdown");
-    const userRoles = user.userRoles.map((r) => r.role)
+    const {data :session} = useSession();
+    const user = session?.user as SessionUser
 
 
     const handleLogout = async () => {
@@ -50,7 +51,7 @@ export default function UserDropdown({ user }: { user: UserLight }) {
                         <DropdownMenuItem>
                             <Bell /> {t('notifications')}
                         </DropdownMenuItem>
-                        {userRoles.includes(Role.ADMIN)
+                        {user?.roles.includes(Role.ADMIN)
                             ? <DropdownMenuItem asChild>
                                 <Link href={"/app/administration"}>
                                     <Shield /> {t('administration')}
@@ -58,7 +59,7 @@ export default function UserDropdown({ user }: { user: UserLight }) {
                             </DropdownMenuItem>
                             : null
                         }
-                        {userRoles.includes(Role.ADMIN)
+                        {user?.roles.includes(Role.ADMIN)
                             ? <DropdownMenuItem onClick={() => setOpenMessages(true)}>
                                 <MessagesSquare /> {t('messages')}
                             </DropdownMenuItem>
@@ -84,10 +85,10 @@ export default function UserDropdown({ user }: { user: UserLight }) {
                 </DropdownMenuContent>
             </DropdownMenu >
             <ContactMessages open={openMessages} setOpen={setOpenMessages} />
-            <ChangePassword user={user!} open={openChangePassword} setOpen={setOpenChangePassword} />
-            <ChangeNickname user={user!} open={openChangeNickname} setOpen={setOpenChangeNickname} />
-            <ChangeMail user={user!} open={openChangeMail} setOpen={setOpenChangeMail} />
-            <DeleteUser user={user!} open={openDeleteUser} setOpen={setOpenDeleteUser} />
+            <ChangePassword user={user} open={openChangePassword} setOpen={setOpenChangePassword} />
+            <ChangeNickname user={user} open={openChangeNickname} setOpen={setOpenChangeNickname} />
+            <ChangeMail user={user} open={openChangeMail} setOpen={setOpenChangeMail} />
+            <DeleteUser user={user} open={openDeleteUser} setOpen={setOpenDeleteUser} />
         </>
     )
 }

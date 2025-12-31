@@ -4,7 +4,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import { ChangePasswordFormSchema, UserLight } from "@/lib/definitions";
+import { ChangePasswordFormSchema, SessionUser, UserLight } from "@/lib/definitions";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export default function ChangePassword({ user, children, open, setOpen }: { user: UserLight, children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ChangePassword({ user, children, open, setOpen }: { user: SessionUser | UserLight, children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
     const t = useTranslations("dialogs.users.changePassword");
     const [loading, setLoading] = useState(false);
     const form = useForm<z.infer<typeof ChangePasswordFormSchema>>({
@@ -20,7 +20,7 @@ export default function ChangePassword({ user, children, open, setOpen }: { user
         defaultValues: {
             password: "",
             passwordConfirmation: "",
-            oldPassword : ""
+            oldPassword: ""
         }
     });
 

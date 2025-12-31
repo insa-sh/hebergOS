@@ -3,9 +3,6 @@
 import { useFormatter, useTranslations } from "next-intl";
 import { ContainerWithActivity } from "@/lib/definitions";
 import { robotoMono } from "@/ui/fonts";
-import StartContainer from "@/components/dialogs/containers/StartContainer";
-import StopContainer from "@/components/dialogs/containers/StopContainer";
-import RestartContainer from "@/components/dialogs/containers/RestartContainer";
 import { ContainerActivityType, ContainerState } from "@prisma/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import ActivitiesCard from "@/components/containers/ActivitiesCard";
@@ -13,7 +10,6 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { set } from "zod";
 import { toast } from "@/hooks/use-toast";
 
 export default function DummyContainerActions({ container }: { container: ContainerWithActivity }) {

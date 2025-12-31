@@ -1,4 +1,4 @@
-import { NextIntlClientProvider } from 'next-intl';
+import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import type { Metadata, Viewport } from "next";
 import "../globals.css";
 import { roboto } from "../../ui/fonts";
@@ -18,18 +18,11 @@ export const viewport: Viewport = {
   initialScale: 1.0,
 }
 
-export default async function RootLayout(
-  props: Readonly<{
-    children: React.ReactNode;
-    params: { locale: string };
-  }>
-) {
-  const {
-    children
-  } = props;
-
+export default async function RootLayout(props: Readonly<{ children: React.ReactNode, params: Promise<{ locale: string }>}>) {
+  const { children } = props;
+  const {locale} = await props.params;
   // Ensure that the incoming `locale` is valid
-  if (!routing.locales.includes((await props.params).locale as "en" | "fr")) {
+  if (!hasLocale(routing.locales,locale)) {
     notFound();
   }
 

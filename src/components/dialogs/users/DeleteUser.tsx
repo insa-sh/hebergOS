@@ -4,14 +4,14 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { UserLight } from "@/lib/definitions";
+import { SessionUser, UserLight } from "@/lib/definitions";
 import { Loader2 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { SetStateAction } from "react";
 
-export default function DeleteUser({ user, open, setOpen }: { user: UserLight, open?: boolean, setOpen?: React.Dispatch<SetStateAction<boolean>> }) {
+export default function DeleteUser({ user, open, setOpen }: { user: SessionUser | UserLight, open?: boolean, setOpen?: React.Dispatch<SetStateAction<boolean>> }) {
 
     const t = useTranslations("dialogs.users.delete");
     const [loading, setLoading] = React.useState<boolean>(false);

@@ -1,6 +1,5 @@
 import Caribou from "@/components/Caribou";
 import ContactUsCta from "@/components/ContactUsCta";
-import ContainerActions from "@/components/containers/ContainerActions";
 import ContainerCard from "@/components/containers/ContainerCard";
 import Header from "@/components/Header";
 import DummyChart from "@/components/landing/DummyChart";
@@ -12,16 +11,15 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { DotPattern } from "@/components/dot-pattern";
 import { cn } from "@/lib/utils";
 import DummyContainerActions from "@/components/dialogs/containers/DummyContainerActions";
-import { getMe } from "@/actions/user";
+import Image from "next/image";
 
 export default async function Home() {
-  const user = await getMe()
   const t = await getTranslations('pages.home');
   const locale = await getLocale();
 
   return (
     <>
-      <Header className="translate-y-[-1rem] opacity-0 animate-fade-in [--animation-delay:600ms]" locale={locale} user={user}/>
+      <Header className="translate-y-[-1rem] opacity-0 animate-fade-in [--animation-delay:600ms]" locale={locale} />
       <main className="relative py-28 md:py-32">
         <DotPattern
           className={cn(
@@ -41,7 +39,7 @@ export default async function Home() {
               <div className="rounded-xl border border-white/10 bg-white bg-opacity-[0.01] before:absolute before:bottom-1/2 before:left-0 before:top-0 before:h-full before:w-full before:opacity-0 before:[filter:blur(180px)] before:[background-image:linear-gradient(to_bottom,var(--color-one),var(--color-one),transparent_40%)] before:animate-image-glow">
                 <BorderBeam />
 
-                <img src={`/landing/hero-${locale}.png`} alt="Hero" className="block relative w-full h-full rounded-[inherit] border object-contain" />
+                <Image src={`/landing/hero-${locale}.png`} alt="Hero" className="block relative w-full h-full rounded-[inherit] border object-contain" />
               </div>
             </div>
           </section>
