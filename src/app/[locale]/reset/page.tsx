@@ -13,7 +13,7 @@ export default async function ResetErrorPage() {
 
   return (
     <>
-      <Header locale={locale} user={null} />
+      <Header locale={locale} />
       <main className="max-w-[80rem] min-h-screen row-start-2 px-6 mx-auto sm:items-start overflow-hidden">
         <DotPattern
           className={cn(

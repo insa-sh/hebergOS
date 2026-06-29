@@ -15,7 +15,7 @@ export default async function AppLayout(
 
     return (
         <>
-            <Header locale={locale} user={user}/>
+            <Header locale={locale}/>
             <main className="min-h-screen pt-14 bg-primary/4">
                 <div className="max-w-7xl mx-auto px-6 sm:px-12 md:px-24">
                     {children}

@@ -6,9 +6,6 @@ const withNextIntl = createNextIntlPlugin();
 const nextConfig: NextConfig = {
   /* config options here */
   serverExternalPackages: ['@prisma/client', 'bcryptjs'],
-  eslint: {
-    ignoreDuringBuilds: true
-  }
 };
 
 export default withNextIntl(nextConfig);

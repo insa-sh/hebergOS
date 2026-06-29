@@ -14,7 +14,7 @@ export default async function ContactUs() {
 
     return (
         <>
-            <Header locale={locale} user={user} />
+            <Header locale={locale} />
             <main className="min-h-screen mx-auto grid grid-cols-1 grid-rows-[1fr_auto_1fr] md:grid-cols-[1fr_auto_1fr] md:grid-rows-1 md:gap-8">
                 <div className="relative h-full overflow-hidden">
                     <div className="mt-32 md:mt-64 max-w-lg mx-auto px-3 md:px-0 z-40">
