@@ -20,7 +20,7 @@ export type SessionUser = {
     id: string;
     nickname : string;
     roles: string[];
-} & DefaultSession 
+}
 
 export const SignInFormSchema = z.object({
     nickname: z.string().trim(),

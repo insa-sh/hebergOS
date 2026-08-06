@@ -18,8 +18,9 @@ import DeleteUser from "./dialogs/users/DeleteUser";
 export default function UserDropdown() {
 
     const t = useTranslations("components.users.userDropdown");
-    const {data :session} = useSession();
-    const user = session?.user as SessionUser
+    const {data: session, status} = useSession();
+    console.log("Session", session, "Status", status);
+    const user = session?.user as SessionUser;
 
 
     const handleLogout = async () => {

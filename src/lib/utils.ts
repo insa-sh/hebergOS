@@ -2,7 +2,7 @@ import { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { Role } from '@prisma/client';
-import { SignInFormSchema, UserWithContainers } from '@/lib/definitions';
+import { SignInFormSchema, UserWithContainers, SessionUser } from '@/lib/definitions';
 import { clsx, type ClassValue } from "clsx"
 import { getServerSession } from "next-auth";
 import { twMerge } from "tailwind-merge"
@@ -18,13 +18,10 @@ export const authConfig: NextAuthOptions = {
   },
   providers: [
     CredentialsProvider({
+      id: 'signin',
       name: 'Sign in',
       credentials: {
-        email: {
-          label: 'Email',
-          type: 'email',
-          placeholder: 'hello@exemple.com'
-        },
+        nickname: { label: 'Username', type: 'text' },
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
@@ -38,38 +35,48 @@ export const authConfig: NextAuthOptions = {
 
         const user = await prisma.user.findUnique({ where: { nickname }, include: { userRoles: true }, omit: { password: false } });
 
-        if (!user) return null;
+        if (!user) {
+	  return null;
+	}
 
         const passwordsMatch = await bcrypt.compare(password, user.password);
 
-        if (!passwordsMatch) return null;
+        if (!passwordsMatch) {
+	  return null;
+	}
 
+	console.log("User logged in");
         return { id: user.id, email: user.email, name: user.name, roles: user.userRoles.map((r) => r.role) };
       },
     })
   ],
   callbacks: {
-    session: ({ session, token }) => {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: token.id,
-          roles: token.roles
-        }
+    async session ({ session, token }) {
+      if (token) {
+	session.user.id = token.id;
+	session.user.email = token.email;
+        session.user.name = token.name;
+        session.user.roles = token.roles;
       }
+      return session;
     },
-    jwt: ({ token, user }) => {
-      // Means they just logged in
+    async jwt ({ token, user }) {
       if (user) {
-        const u = user as unknown as { id: string, email: string, name: string, roles: string[] };
-        return {
-          ...token,
-          id: u.id,
-          roles: u.roles
-        }
+	console.log("JWT User",user);
+        const u = user as SessionUser;
+        token.id = u.id;
+	token.email = u.email;
+	token.name = u.name;
+        token.roles = u.roles;
       }
       return token;
+    },
+    async redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url
+      return baseUrl
     }
   }
 };

@@ -39,7 +39,7 @@ export default async function Home() {
               <div className="rounded-xl border border-white/10 bg-white bg-opacity-[0.01] before:absolute before:bottom-1/2 before:left-0 before:top-0 before:h-full before:w-full before:opacity-0 before:[filter:blur(180px)] before:[background-image:linear-gradient(to_bottom,var(--color-one),var(--color-one),transparent_40%)] before:animate-image-glow">
                 <BorderBeam />
 
-                <Image src={`/landing/hero-${locale}.png`} alt="Hero" className="block relative w-full h-full rounded-[inherit] border object-contain" />
+                <Image src={`/landing/hero-${locale}.png`} alt="Hero" fill={true} className="block relative w-full h-full rounded-[inherit] border object-contain" />
               </div>
             </div>
           </section>

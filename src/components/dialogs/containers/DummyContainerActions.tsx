@@ -1,6 +1,6 @@
 'use client'
 
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useTranslations, useNow } from "next-intl";
 import { ContainerWithActivity } from "@/lib/definitions";
 import { robotoMono } from "@/ui/fonts";
 import { ContainerActivityType, ContainerState } from "@prisma/client";
@@ -19,12 +19,13 @@ export default function DummyContainerActions({ container }: { container: Contai
     const stopT = useTranslations("dialogs.containers.stop");
     const restartT = useTranslations("dialogs.containers.restart");
     const formatter = useFormatter();
+    const now = useNow();
 
     const renderDescription = () => {
         let text;
         switch (container.state) {
             case "RUNNING":
-                text = t('descriptionRunning', { name: container.name, time: formatter.relativeTime((container.startedAt || new Date()).getTime()) });
+                text = t('descriptionRunning', { name: container.name, time: formatter.relativeTime((container.startedAt || now), now)});
                 break;
 
             case "STOPPED":

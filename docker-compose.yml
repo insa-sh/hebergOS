@@ -1,14 +1,13 @@
-version: '3'
-
 services:
   database:
     image: mysql:5.7
     restart: always
     network_mode: bridge
     environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD: yes
-      - MYSQL_USER: ${MYSQL_USER}
-      - MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: hebergos
     ports:
       - 3306:3306
     volumes:

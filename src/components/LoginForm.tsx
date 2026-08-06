@@ -30,6 +30,7 @@ export default function LoginForm() {
     const onSubmit = async (data: { nickname: string; password: string; }) => {
         setLoading(true);
         const r = await signIn('credentials', { nickname: data.nickname, password: data.password, redirectUrl: '/app', redirectTo: '/app', redirect: true });
+	console.log("Signin-Response",r);
         if (r && r.error) {
             toast({
                 title: "form.error.title",

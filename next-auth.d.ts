@@ -9,7 +9,7 @@ declare module "next-auth" {
             id: string
             nickname : string
             roles: string[]
-        } & DefaultSession;
+        }
     }
 
     export interface User extends DefaultUser {
