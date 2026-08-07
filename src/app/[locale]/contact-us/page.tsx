@@ -1,7 +1,7 @@
-import { getMe } from "@/actions/user";
 import Caribou from "@/components/Caribou";
 import ContactForm from "@/components/ContactForm";
 import Header from "@/components/Header";
+import { getUser } from "@/lib/dal";
 import { Building, Instagram, Mail } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
@@ -10,7 +10,6 @@ export default async function ContactUs() {
 
     const t = await getTranslations("pages.contact");
     const locale = await getLocale();
-    const user = await getMe();
 
     return (
         <>

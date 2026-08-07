@@ -1,12 +1,12 @@
-import { getMe } from "@/actions/user"
 import Container from "@/components/containers/ContainerCard";
+import { getUserContainer } from "@/lib/dal";
 import { getTranslations } from "next-intl/server";
 import { Fragment } from "react";
 
 export default async function Dashboard() {
 
     const t = await getTranslations("pages.app.dashboard");
-    const me = await getMe();
+    const me = await getUserContainer();
 
     return (
         <>

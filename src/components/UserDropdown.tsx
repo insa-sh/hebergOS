@@ -11,12 +11,11 @@ import { Role } from "@prisma/client";
 import ChangePassword from "./dialogs/users/ChangePassword";
 import ChangeNickname from "./dialogs/users/ChangeNickname";
 import ChangeMail from "./dialogs/users/ChangeMail";
-import { SessionUser } from "@/lib/definitions";
 import DeleteUser from "./dialogs/users/DeleteUser";
 import { getUser } from "@/lib/dal";
-import { signOut } from "@/app/api/auth";
+import { signOut } from "@/actions/auth";
 
-export default async function UserDropdown() {
+export default async function UserDropdown({}) {
 
     const t = useTranslations("components.users.userDropdown");
     const user = await getUser();

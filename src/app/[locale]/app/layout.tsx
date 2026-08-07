@@ -1,4 +1,3 @@
-import { getMe } from "@/actions/user";
 import Header from "@/components/Header";
 import { syncContainers } from "@/lib/utils";
 import { getLocale } from "next-intl/server";
@@ -11,7 +10,6 @@ export default async function AppLayout(
     await syncContainers();
 
     const locale = await getLocale();
-    const user = await getMe();
 
     return (
         <>

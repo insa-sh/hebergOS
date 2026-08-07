@@ -12,7 +12,7 @@ import { SignInFormSchema } from "@/lib/definitions";;
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { signIn } from "@/app/api/auth";
+import { signIn } from "@/actions/auth";
 import { z } from "zod";
 
 export default function LoginForm() {
@@ -34,7 +34,7 @@ export default function LoginForm() {
         if (!r) {
             toast({
                 title: "form.error.title",
-                description: "form.error.message",
+                description: `form.error.${r}`,
                 variant: "destructive"
             });
         }

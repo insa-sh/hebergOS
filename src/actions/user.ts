@@ -2,7 +2,7 @@
 
 import { ChangeMailFormSchema, ChangeNicknameFormSchema, ChangePasswordFormSchema, EditRolesFormSchema, LinkContainersFormSchema, RegisterFormSchema, ResetFormSchema, UserWithContainers } from "@/lib/definitions";
 import { prisma } from "@/lib/prisma";
-import {  isAdmin, isUser } from "@/lib/utils";
+import { isAdmin, isUser } from "@/lib/utils";
 import bcrypt from 'bcryptjs';
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { revalidatePath } from "next/cache";
@@ -61,8 +61,8 @@ export async function createUser(data: z.infer<typeof RegisterFormSchema>): Prom
             }
         });
 
-        if (!(await sendPasswordReset(resetToken, {name : name, email : email}))) {
-            return {error: 'mail-error'}
+        if (!(await sendPasswordReset(resetToken, { name: name, email: email }))) {
+            return { error: 'mail-error' }
         }
 
         revalidatePath("/app/administration");
@@ -198,8 +198,7 @@ export async function createResetLink(userId: string): Promise<boolean> {
         if (!(await sendPasswordReset(resetToken, user))) {
             return false
         }
-        await deleteAllSessionUser(userId);
-
+        await deleteAllSessionUser(userId)
         return true;
     } catch {
         return false;

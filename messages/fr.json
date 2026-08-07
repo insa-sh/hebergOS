@@ -210,7 +210,8 @@
                     },
                     "error": {
                         "title": "Connexion échouée",
-                        "description": "Nom d'utilisateur ou mot de passe incorrect"
+                        "credentials": "Nom d'utilisateur ou mot de passe incorrect",
+                        "unknown": "Une erreur inattendue s'est produite, veuillez réessayer !"
                     }
                 }
             },

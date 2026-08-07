@@ -1,4 +1,4 @@
-import { NotificationType, Prisma, Role } from "@prisma/client";
+import { $Enums, NotificationType, Prisma, Role } from "@prisma/client";
 import { z } from "zod";
 
 export type ClientContainerStat = {
@@ -30,6 +30,16 @@ export type SessionUser = {
     nickname : string;
     roles: string[];
 }
+
+export type ContainerLight = {
+    id: string;
+    name: string;
+    state: $Enums.ContainerState;
+}
+
+export type SessionUserContainer = {
+    containers: ContainerLight[]
+} & SessionUser
 
 export const SignInFormSchema = z.object({
     nickname: z.string().trim(),

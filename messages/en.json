@@ -210,7 +210,8 @@
                     },
                     "error": {
                         "title": "Login failed",
-                        "description": "Invalid username or password"
+                        "credentials": "Invalid username or password",
+                        "unknown": "Something went wrong, please retry later"
                     }
                 }
             },
