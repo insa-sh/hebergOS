@@ -7,12 +7,12 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import { Button } from "../ui/button";
 import LinkUsers from "../dialogs/containers/LinkUsers";
 import { UserRoundPlus } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { Role } from "@prisma/client";
+import { getUser } from "@/lib/dal";
 
-export default function ContainerOverview({ container }: { container: ContainerWithActivity & ContainerWithUsers }) {
+export default async function ContainerOverview({ container }: { container: ContainerWithActivity & ContainerWithUsers }) {
 
-    const session = useSession();
+    const sessionUser = await getUser()
     const t = useTranslations("pages.app.container.overview");
 
     return (
@@ -29,7 +29,7 @@ export default function ContainerOverview({ container }: { container: ContainerW
                 <CardHeader>
                     <CardTitle className="text-primary flex justify-between">
                         {t('users.title')}
-                        {session.data?.user.roles.includes(Role.ADMIN)
+                        {sessionUser?.roles.includes(Role.ADMIN)
                             ? <TooltipProvider>
                                 <Tooltip>
                                     <LinkUsers container={container}>

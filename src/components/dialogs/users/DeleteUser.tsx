@@ -1,4 +1,5 @@
 import { deleteUser } from "@/actions/user";
+import { signOut } from "@/app/api/auth";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -6,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { SessionUser, UserLight } from "@/lib/definitions";
 import { Loader2 } from "lucide-react";
-import { signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { SetStateAction } from "react";
@@ -43,7 +43,7 @@ export default function DeleteUser({ user, open, setOpen }: { user: SessionUser 
             setOpen(false);
         }
 
-        signOut()
+        await signOut()
     }
 
     return (

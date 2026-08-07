@@ -10,18 +10,18 @@ import ContainerAsks from "./ContainerAsks";
 import { ContainerWithActivity, ContainerWithNotificationsAndUsers, ContainerWithUsers } from "@/lib/definitions";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { Role } from "@prisma/client";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
+import { getUser } from "@/lib/dal";
 
-export default function ContainerTabs({ container }: { container: ContainerWithActivity & ContainerWithUsers & ContainerWithNotificationsAndUsers }) {
+export default async function ContainerTabs({ container }: { container: ContainerWithActivity & ContainerWithUsers & ContainerWithNotificationsAndUsers }) {
 
     const { replace } = useRouter();
     const searchParams = useSearchParams();
-    const session = useSession();
+    const sessionUser = await getUser();
     const t = useTranslations("pages.app.container.tabs");
 
     const [tabsValue, setTabsValue] = useState(searchParams.get('tab') || 'overview');
@@ -43,7 +43,7 @@ export default function ContainerTabs({ container }: { container: ContainerWithA
                     <DropdownMenuContent>
                         <DropdownMenuItem onClick={() => setTabsValue('overview')}>{t('overview')}</DropdownMenuItem>
                         <DropdownMenuItem onClick={() => setTabsValue('graphs')}>{t('graphs')}</DropdownMenuItem>
-                        {session.data?.user.roles.some(el => el === Role.ADMIN || el === Role.INFO)
+                        {sessionUser?.roles.some(el => el === Role.ADMIN || el === Role.INFO)
                             ? <DropdownMenuItem onClick={() => setTabsValue('shell')}>{t('shell')}</DropdownMenuItem>
                             : null}
                         <DropdownMenuItem onClick={() => setTabsValue('actions')}>{t('actions')}</DropdownMenuItem>
@@ -56,7 +56,7 @@ export default function ContainerTabs({ container }: { container: ContainerWithA
                 <TabsList className="hidden md:flex w-fit h-auto rounded-l-full rounded-r-full mx-auto mb-11">
                     <TabsTrigger className="w-32 p-2 rounded-l-full" value="overview">{t('overview')}</TabsTrigger>
                     <TabsTrigger className="w-32 p-2" value="graphs">{t('graphs')}</TabsTrigger>
-                    {session.data?.user.roles.some(el => el === Role.ADMIN || el === Role.INFO)
+                    {sessionUser?.roles.some(el => el === Role.ADMIN || el === Role.INFO)
                         ? <TabsTrigger className="w-32 p-2" value="shell">{t('shell')}</TabsTrigger>
                         : null}
                     <TabsTrigger className="w-32 p-2" value="actions">{t('actions')}</TabsTrigger>

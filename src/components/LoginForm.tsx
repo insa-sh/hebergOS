@@ -8,11 +8,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Input } from "./ui/input";
-import { SignInFormSchema } from "@/lib/definitions";
-import { signIn } from "next-auth/react";
+import { SignInFormSchema } from "@/lib/definitions";;
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { signIn } from "@/app/api/auth";
+import { z } from "zod";
 
 export default function LoginForm() {
     const t = useTranslations("components.auth.login");
@@ -27,11 +28,10 @@ export default function LoginForm() {
         }
     });
 
-    const onSubmit = async (data: { nickname: string; password: string; }) => {
+    const onSubmit = async (data:  z.infer<typeof SignInFormSchema>) => {
         setLoading(true);
-        const r = await signIn('credentials', { nickname: data.nickname, password: data.password, redirectUrl: '/app', redirectTo: '/app', redirect: true });
-	console.log("Signin-Response",r);
-        if (r && r.error) {
+        const r = await signIn(data)
+        if (!r) {
             toast({
                 title: "form.error.title",
                 description: "form.error.message",

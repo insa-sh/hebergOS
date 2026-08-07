@@ -16,12 +16,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Textarea } from "../ui/textarea";
-import { useSession } from "next-auth/react";
 import { Label } from "../ui/label";
+import { getUser } from "@/lib/dal";
 
-export default function CreateTicketDialog({ children, container }: { children: React.ReactNode, container: Container }) {
+export default async function CreateTicketDialog({ children, container }: { children: React.ReactNode, container: Container }) {
 
-    const session = useSession();
+    const sessionUser = await getUser();
     const t = useTranslations("dialogs.containers.createTicket");
 
     const [open, setOpen] = useState(false);
@@ -95,7 +95,7 @@ export default function CreateTicketDialog({ children, container }: { children: 
                 <div className="grid grid-cols-2 gap-2">
                     <div>
                         <Label>{t('form.fields.user.label')}</Label>
-                        <Input value={session.data?.user.name} disabled />
+                        <Input value={sessionUser?.name} disabled />
                     </div>
                     <div>
                         <Label>{t('form.fields.container.label')}</Label>

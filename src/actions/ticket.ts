@@ -1,10 +1,10 @@
 'use server'
 
+import { getUser } from "@/lib/dal";
 import { CreateTicketFormSchema, NotificationWithUserAndContainer } from "@/lib/definitions";
 import { prisma } from "@/lib/prisma";
-import { authConfig, isAdmin } from "@/lib/utils";
+import { isAdmin } from "@/lib/utils";
 import { NotificationState, NotificationType } from "@prisma/client";
-import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 
 export async function getAllTickets(): Promise<NotificationWithUserAndContainer[]> {
@@ -18,9 +18,9 @@ export async function getAllTickets(): Promise<NotificationWithUserAndContainer[
 }
 
 export async function createTicket(containerId: string, data: { type: NotificationType, message: string }): Promise<boolean> {
-    const session = await getServerSession(authConfig);
+    const sessionUser = await getUser();
 
-    if (!session) {
+    if (!sessionUser) {
         return false;
     }
 
@@ -31,7 +31,7 @@ export async function createTicket(containerId: string, data: { type: Notificati
     }
 
     const user = await prisma.user.findUnique({
-        where: { id: session.user.id },
+        where: { id: sessionUser.id },
         include: { containers: true }
     });
 
@@ -62,9 +62,9 @@ export async function createTicket(containerId: string, data: { type: Notificati
 }
 
 export async function cancelTicket(ticketId: string): Promise<boolean> {
-    const session = await getServerSession(authConfig);
+    const sessionUser = await getUser();
 
-    if (!session) {
+    if (!sessionUser) {
         return false;
     }
 
@@ -78,7 +78,7 @@ export async function cancelTicket(ticketId: string): Promise<boolean> {
     }
 
     const user = await prisma.user.findUnique({
-        where: { id: session.user.id },
+        where: { id: sessionUser.id },
         include: { containers: true }
     });
 

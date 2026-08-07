@@ -1,39 +1,15 @@
 'use server'
 
-import { ChangeMailFormSchema, ChangeNicknameFormSchema, ChangePasswordFormSchema, LinkContainersFormSchema, RegisterFormSchema, ResetFormSchema, UserWithContainers } from "@/lib/definitions";
+import { ChangeMailFormSchema, ChangeNicknameFormSchema, ChangePasswordFormSchema, EditRolesFormSchema, LinkContainersFormSchema, RegisterFormSchema, ResetFormSchema, UserWithContainers } from "@/lib/definitions";
 import { prisma } from "@/lib/prisma";
-import { authConfig, isAdmin, isUser } from "@/lib/utils";
-import { Role } from "@prisma/client";
-import { getServerSession } from "next-auth";
+import {  isAdmin, isUser } from "@/lib/utils";
 import bcrypt from 'bcryptjs';
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid"
 import { sendPasswordReset } from "./mail";
-
-export async function getMe(): Promise<UserWithContainers | null> {
-    const session = await getServerSession(authConfig);
-
-    if (!session) {
-        return null;
-    }
-
-    const user = await prisma.user.findUnique({
-        where: {
-            id: session.user.id
-        },
-        include: {
-            containers: true,
-            userRoles: true
-        }
-    });
-
-    if (!user) {
-        return null;
-    }
-
-    return user;
-}
+import { z } from "zod";
+import { deleteAllSessionUser } from "@/lib/session";
 
 export async function getUsers(): Promise<UserWithContainers[]> {
     if (!(await isAdmin())) {
@@ -50,7 +26,7 @@ export async function getUsers(): Promise<UserWithContainers[]> {
     return users;
 }
 
-export async function createUser(data: { name: string, email: string, nickname: string, roles: Role[] }): Promise<{ error?: string }> {
+export async function createUser(data: z.infer<typeof RegisterFormSchema>): Promise<{ error?: string }> {
     if (!(await isAdmin())) {
         return { error: 'not-authorized' };
     }
@@ -103,7 +79,7 @@ export async function createUser(data: { name: string, email: string, nickname: 
     }
 }
 
-export async function linkContainers(userId: string, containers: { containers: string[] }): Promise<boolean> {
+export async function linkContainers(userId: string, containers: z.infer<typeof LinkContainersFormSchema>): Promise<boolean> {
     if (!(await isAdmin())) {
         return false;
     }
@@ -132,7 +108,7 @@ export async function linkContainers(userId: string, containers: { containers: s
     }
 }
 
-export async function changeNickname(userId: string, data: { nickname: string }): Promise<boolean> {
+export async function changeNickname(userId: string, data: z.infer<typeof ChangeNicknameFormSchema>): Promise<boolean> {
     if (!(await isAdmin()) && !(await isUser(userId))) {
         return false;
     }
@@ -158,7 +134,7 @@ export async function changeNickname(userId: string, data: { nickname: string })
     }
 }
 
-export async function changeMail(userId: string, data: { email: string }): Promise<boolean> {
+export async function changeMail(userId: string, data: z.infer<typeof ChangeMailFormSchema>): Promise<boolean> {
     if (!(await isAdmin()) && !(await isUser(userId))) {
         return false;
     }
@@ -222,6 +198,7 @@ export async function createResetLink(userId: string): Promise<boolean> {
         if (!(await sendPasswordReset(resetToken, user))) {
             return false
         }
+        await deleteAllSessionUser(userId);
 
         return true;
     } catch {
@@ -259,7 +236,7 @@ export async function isTokenValid(resetToken: string): Promise<boolean> {
     }
 }
 
-export async function resetPassword(resetToken: string, data: { password: string, passwordConfirmation: string }): Promise<boolean> {
+export async function resetPassword(resetToken: string, data: z.infer<typeof ResetFormSchema>): Promise<boolean> {
     try {
         const request = await prisma.passwordResetRequest.findUnique({
             where: {
@@ -313,7 +290,7 @@ export async function resetPassword(resetToken: string, data: { password: string
     }
 }
 
-export async function changePassword(userId: string, data: { oldPassword: string, password: string, passwordConfirmation: string }): Promise<boolean> {
+export async function changePassword(userId: string, data: z.infer<typeof ChangePasswordFormSchema>): Promise<boolean> {
     if (!(await isUser(userId))) {
         return false;
     }
@@ -359,7 +336,8 @@ export async function changePassword(userId: string, data: { oldPassword: string
     }
 }
 
-export async function editRoles(userId: string, roles: { roles: Role[] }): Promise<boolean> {
+export async function editRoles(userId: string, roles: z.infer<typeof EditRolesFormSchema>): Promise<boolean> {
+
     if (!(await isAdmin())) {
         return false;
     }

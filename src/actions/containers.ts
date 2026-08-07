@@ -1,17 +1,17 @@
 'use server'
 
 import { apiEditCpuLimit, apiEditMemoryLimit } from "@/lib/apiService";
+import { getUser } from "@/lib/dal";
 import { ChangeDomainFormSchema, ClientContainerStat, ContainerWithActivity, ContainerWithNotificationsAndUsers, ContainerWithUsers, CreateContainerFormSchema, EditCpuLimitContainerFormSchema, EditMemoryLimitContainerFormSchema, LinkUsersFormSchema } from "@/lib/definitions";
 import { prisma } from "@/lib/prisma";
-import { authConfig, isAdmin } from "@/lib/utils";
+import { isAdmin } from "@/lib/utils";
 import { Container, ContainerActivityType } from "@prisma/client";
-import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 
 export async function getContainer(id: string) {
-    const session = await getServerSession(authConfig);
+    const sessionUser = await getUser();
 
-    if (!session) {
+    if (!sessionUser) {
         return null;
     }
 
@@ -24,7 +24,7 @@ export async function getContainer(id: string) {
         return null;
     }
 
-    if (await isAdmin() || container.users.some((user) => user.id === session.user.id)) {
+    if (await isAdmin() || container.users.some((user) => user.id === sessionUser.id)) {
         return container;
     }
 
@@ -32,9 +32,9 @@ export async function getContainer(id: string) {
 }
 
 export async function getContainerFull(id: string): Promise<ContainerWithActivity & ContainerWithUsers & ContainerWithNotificationsAndUsers | null> {
-    const session = await getServerSession(authConfig);
+    const sessionUser = await getUser();
 
-    if (!session) {
+    if (!sessionUser) {
         return null;
     }
 
@@ -55,7 +55,7 @@ export async function getContainerFull(id: string): Promise<ContainerWithActivit
         return null;
     }
 
-    if (await isAdmin() || container.users.some((user) => user.id === session.user.id)) {
+    if (await isAdmin() || container.users.some((user) => user.id === sessionUser.id)) {
         return container;
     }
 
@@ -63,9 +63,9 @@ export async function getContainerFull(id: string): Promise<ContainerWithActivit
 }
 
 export async function getContainerStats(containerId: string, period: "hour" | "4hours" | "day" | "week"): Promise<ClientContainerStat[] | null> {
-    const session = await getServerSession(authConfig);
+    const sessionUser = await getUser();
 
-    if (!session) {
+    if (!sessionUser) {
         return null;
     }
 
@@ -78,7 +78,7 @@ export async function getContainerStats(containerId: string, period: "hour" | "4
         return null;
     }
 
-    if (!(await isAdmin() || container.users.some((user) => user.id === session.user.id))) {
+    if (!(await isAdmin() || container.users.some((user) => user.id === sessionUser.id))) {
         return null;
     }
 
@@ -220,9 +220,9 @@ export async function linkUsers(containerId: string, data: { users: string[] }):
 }
 
 export async function changeContainerDomain(containerId: string, data: { domain: string }): Promise<boolean> {
-    const session = await getServerSession(authConfig);
+    const sessionUser = await getUser();
 
-    if (!session) {
+    if (!sessionUser) {
         return false;
     }
 
@@ -235,7 +235,7 @@ export async function changeContainerDomain(containerId: string, data: { domain:
         return false;
     }
 
-    if (!(await isAdmin() || container.users.some((user) => user.id === session.user.id))) {
+    if (!(await isAdmin() || container.users.some((user) => user.id === sessionUser.id))) {
         return false;
     }
 
@@ -270,9 +270,9 @@ export async function changeContainerDomain(containerId: string, data: { domain:
 }
 
 export async function startContainer(containerId: string): Promise<boolean> {
-    const session = await getServerSession(authConfig);
+    const sessionUser = await getUser();
 
-    if (!session) {
+    if (!sessionUser) {
         return false;
     }
 
@@ -285,7 +285,7 @@ export async function startContainer(containerId: string): Promise<boolean> {
         return false;
     }
 
-    if (!(await isAdmin() || container.users.some((user) => user.id === session.user.id))) {
+    if (!(await isAdmin() || container.users.some((user) => user.id === sessionUser.id))) {
         return false;
     }
 
@@ -312,9 +312,9 @@ export async function startContainer(containerId: string): Promise<boolean> {
 }
 
 export async function stopContainer(containerId: string): Promise<boolean> {
-    const session = await getServerSession(authConfig);
+    const sessionUser = await getUser();
 
-    if (!session) {
+    if (!sessionUser) {
         return false;
     }
 
@@ -327,7 +327,7 @@ export async function stopContainer(containerId: string): Promise<boolean> {
         return false;
     }
 
-    if (!(await isAdmin() || container.users.some((user) => user.id === session.user.id))) {
+    if (!(await isAdmin() || container.users.some((user) => user.id === sessionUser.id))) {
         return false;
     }
 
@@ -354,9 +354,9 @@ export async function stopContainer(containerId: string): Promise<boolean> {
 }
 
 export async function restartContainer(containerId: string): Promise<boolean> {
-    const session = await getServerSession(authConfig);
+    const sessionUser = await getUser();
 
-    if (!session) {
+    if (!sessionUser) {
         return false;
     }
 
@@ -369,7 +369,7 @@ export async function restartContainer(containerId: string): Promise<boolean> {
         return false;
     }
 
-    if (!(await isAdmin() || container.users.some((user) => user.id === session.user.id))) {
+    if (!(await isAdmin() || container.users.some((user) => user.id === sessionUser.id))) {
         return false;
     }
 

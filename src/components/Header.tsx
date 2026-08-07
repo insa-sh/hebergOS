@@ -1,4 +1,4 @@
-import { getServerSession } from "next-auth"
+
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { robotoMono } from "@/ui/fonts";
@@ -9,14 +9,14 @@ import ContactUsCta from "./ContactUsCta";
 import { routing } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
-import { authConfig, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import ChangeLocale from "./ChangeLocale";
+import { getUser } from "@/lib/dal";
 
 export default async function Header({ className, locale }: { className?: string, locale: string }) {
     const headerList = headers();
 
-    const session = await getServerSession(authConfig);
-    const user = session?.user
+    const sessionUser = await getUser();
     const isOnLandingPage = new RegExp(`^\/(${routing.locales.join('|')})(/contact-us)?$`).test((await headerList).get("X-Current-Path") || '');
     const t = await getTranslations('components.header');
 
@@ -28,7 +28,7 @@ export default async function Header({ className, locale }: { className?: string
         )}>
             {/* <Image src={"/favicon.png"} alt="HebergOS" width={48} height={48} /> */}
             <h1 className={`${robotoMono.className} font-bold text-2xl`}>
-                {user
+                {sessionUser
                     ? <Link href={"/app"}><AppName /></Link>
                     : <Link href={"/"}><AppName /></Link>
                 }
@@ -36,18 +36,18 @@ export default async function Header({ className, locale }: { className?: string
             <h1 className={`hidden md:block ${robotoMono.className} antialiased text-center text-xl text-primary`}>./insa.sh</h1>
             <div>
                 <div className="hidden md:flex justify-end items-center gap-4 text-xl">
-                    {!user
+                    {!sessionUser
                         ? <>
                             <ContactUsCta variant={"outline"} />
                             <Button asChild><Link href={"/login"} className="text-lg"><LogIn className="w-6 h-6" /> {t('login')}</Link></Button>
                         </>
                         : null
                     }
-                    {user && isOnLandingPage
+                    {sessionUser && isOnLandingPage
                         ? <Button variant={"link"}><Link href={"/app"}>{t('goToApp')}</Link></Button>
                         : null
                     }
-                    {user && !isOnLandingPage
+                    {sessionUser && !isOnLandingPage
                         ? <UserDropdown />
                         : null
                     }
@@ -55,7 +55,7 @@ export default async function Header({ className, locale }: { className?: string
                 </div>
 
                 <div className="md:hidden flex justify-end items-center gap-4 text-xl">
-                    {!user
+                    {!sessionUser
                         ? <>
                             <ContactUsCta variant={"outline"} className="hidden md:block" />
                             <Button asChild><Link href={"/login"} className="text-lg"><LogIn className="w-6 h-6" /> {t('login')}</Link></Button>

@@ -4,7 +4,6 @@ import { Bell, Lock, LogOut, Mail, MessagesSquare, Shield, Trash, User } from "l
 import { Button } from "./ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import ContactMessages from "./dialogs/contact/ContactMessages";
 import React from "react";
@@ -14,13 +13,16 @@ import ChangeNickname from "./dialogs/users/ChangeNickname";
 import ChangeMail from "./dialogs/users/ChangeMail";
 import { SessionUser } from "@/lib/definitions";
 import DeleteUser from "./dialogs/users/DeleteUser";
+import { getUser } from "@/lib/dal";
+import { signOut } from "@/app/api/auth";
 
-export default function UserDropdown() {
+export default async function UserDropdown() {
 
     const t = useTranslations("components.users.userDropdown");
-    const {data: session, status} = useSession();
-    console.log("Session", session, "Status", status);
-    const user = session?.user as SessionUser;
+    const user = await getUser();
+    if (!user){
+        return null;
+    }
 
 
     const handleLogout = async () => {

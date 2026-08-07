@@ -207,9 +207,12 @@
                         "submit": "Login",
                         "submitting": "Logging in...",
                         "forgotPassword": "Forgot password"
+                    },
+                    "error": {
+                        "title": "Login failed",
+                        "description": "Invalid username or password"
                     }
-                },
-                "error": "Invalid username or password"
+                }
             },
             "reset": {
                 "title": "Reset",

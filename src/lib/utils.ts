@@ -1,121 +1,48 @@
-import { type NextAuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { Role } from '@prisma/client';
 import { SignInFormSchema, UserWithContainers, SessionUser } from '@/lib/definitions';
 import { clsx, type ClassValue } from "clsx"
-import { getServerSession } from "next-auth";
 import { twMerge } from "tailwind-merge"
-import { prisma } from "./prisma";
+import { prisma } from "@/lib/prisma";
 import { ContainerState } from "@prisma/client";
+import { getUser, verifySession } from '@/lib/dal';
 
-export const authConfig: NextAuthOptions = {
-  session: {
-    strategy: 'jwt'
-  },
-  pages: {
-    signIn: '/login',
-  },
-  providers: [
-    CredentialsProvider({
-      id: 'signin',
-      name: 'Sign in',
-      credentials: {
-        nickname: { label: 'Username', type: 'text' },
-        password: { label: 'Password', type: 'password' }
-      },
-      async authorize(credentials) {
-        const parsedCredentials = SignInFormSchema.safeParse(credentials);
-
-        if (!parsedCredentials.success) {
-          return null;
-        }
-
-        const { nickname, password } = parsedCredentials.data;
-
-        const user = await prisma.user.findUnique({ where: { nickname }, include: { userRoles: true }, omit: { password: false } });
-
-        if (!user) {
-	  return null;
-	}
-
-        const passwordsMatch = await bcrypt.compare(password, user.password);
-
-        if (!passwordsMatch) {
-	  return null;
-	}
-
-	console.log("User logged in");
-        return { id: user.id, email: user.email, name: user.name, roles: user.userRoles.map((r) => r.role) };
-      },
-    })
-  ],
-  callbacks: {
-    async session ({ session, token }) {
-      if (token) {
-	session.user.id = token.id;
-	session.user.email = token.email;
-        session.user.name = token.name;
-        session.user.roles = token.roles;
-      }
-      return session;
-    },
-    async jwt ({ token, user }) {
-      if (user) {
-	console.log("JWT User",user);
-        const u = user as SessionUser;
-        token.id = u.id;
-	token.email = u.email;
-	token.name = u.name;
-        token.roles = u.roles;
-      }
-      return token;
-    },
-    async redirect({ url, baseUrl }) {
-      // Allows relative callback URLs
-      if (url.startsWith("/")) return `${baseUrl}${url}`
-      // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url
-      return baseUrl
-    }
-  }
-};
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 export async function isAdmin() {
-  const session = await getServerSession(authConfig);
+  const sessionUser = await getUser();
 
-  if (!session) {
+  if (!sessionUser) {
     return false;
   }
 
-  return session.user.roles.includes(Role.ADMIN);
+  return sessionUser.roles.includes(Role.ADMIN);
 }
 
 export async function isUser(id: string) {
-  const session = await getServerSession(authConfig);
+  const sessionUser = await getUser();
 
-  if (!session) {
+  if (!sessionUser) {
     return false;
   }
 
-  return session.user.id === id;
+  return sessionUser.id === id;
 }
 
 export async function canAccessContainer(containerId: string) {
-  const session = await getServerSession(authConfig);
+  const sessionUser = await getUser();
 
-  if (!session) {
+  if (!sessionUser) {
     return false;
   }
 
   let user: UserWithContainers | null = null;
   try {
     user = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: sessionUser.id },
       include: { containers: true, userRoles: true }
     });
   } catch {
@@ -134,9 +61,9 @@ export async function canAccessContainer(containerId: string) {
 }
 
 export async function syncContainers() {
-  const session = await getServerSession(authConfig);
+  const sessionAuth = await verifySession();
 
-  if (!session) {
+  if (!sessionAuth || sessionAuth.isAuth == false) {
     return false;
   }
 

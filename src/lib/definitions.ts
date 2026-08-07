@@ -1,5 +1,4 @@
 import { NotificationType, Prisma, Role } from "@prisma/client";
-import { DefaultSession } from "next-auth";
 import { z } from "zod";
 
 export type ClientContainerStat = {
@@ -12,6 +11,16 @@ export type ClientContainerStat = {
     netDown: number;
     netDeltaUp: number;
     netDeltaDown: number;
+}
+
+export type SessionPayload = {
+    sessionId: string,
+    expiresAt: Date
+}
+
+export type SessionAuth = {
+    isAuth: boolean,
+    sessionId: string,
 }
 
 export type SessionUser = {

@@ -6,7 +6,6 @@ import { UserLight } from "@/lib/definitions";
 import { Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
-import { } from "next-auth/react";
 
 export default function ResetPassword({ user, children, open, setOpen }: { user: UserLight, children?: React.ReactNode, open?: boolean, setOpen?: React.Dispatch<React.SetStateAction<boolean>> }) {
     const t = useTranslations("dialogs.users.resetLink");

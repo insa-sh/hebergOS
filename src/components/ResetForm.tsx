@@ -13,6 +13,7 @@ import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 import { redirect, useSearchParams } from "next/navigation";
 import { resetPassword } from "@/actions/user";
+import { z } from "zod";
 
 export default function ResetForm(params: { token: string }) {
     const t = useTranslations("components.auth.reset");
@@ -27,7 +28,7 @@ export default function ResetForm(params: { token: string }) {
         }
     });
 
-    const onSubmit = async (data: { password: string, passwordConfirmation: string }) => {
+    const onSubmit = async (data: z.infer<typeof ResetFormSchema>) => {
         setLoading(true);
         const r = await resetPassword(params.token, data)
         setLoading(false);
