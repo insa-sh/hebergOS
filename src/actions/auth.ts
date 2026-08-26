@@ -1,3 +1,5 @@
+"use server"
+
 import { SignInFormSchema } from "@/lib/definitions";
 import { z } from "zod";
 import bcrypt from 'bcryptjs';
@@ -6,11 +8,10 @@ import { useRouter } from "@/i18n/routing";
 import { prisma } from "@/lib/prisma";
 
 export async function signIn(formData: z.infer<typeof SignInFormSchema>) {
-	const router = useRouter()
 	const parsedCredentials = SignInFormSchema.safeParse(formData);
 
 	if (!parsedCredentials.success) {
-		return false;
+		return { success: false, error: 'parse'};
 	}
 	const { nickname, password } = parsedCredentials.data
 	const user = await prisma.user.findUnique({ where: { nickname }, include: { userRoles: true }, omit: { password: false } });
@@ -26,7 +27,6 @@ export async function signIn(formData: z.infer<typeof SignInFormSchema>) {
 	}
 	await createSession(user.id);
 
-	router.push('/app')
 	return { success: true, error: "" }
 
 }

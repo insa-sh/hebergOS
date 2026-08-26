@@ -28,13 +28,15 @@ export default function LoginForm() {
         }
     });
 
-    const onSubmit = async (data:  z.infer<typeof SignInFormSchema>) => {
+    const onSubmit = async (data:  { nickname: string; password: string; }) => {
         setLoading(true);
-        const r = await signIn(data)
-        if (!r) {
+	console.log("Sign In")
+        const {success, error} = await signIn(data)
+	console.log(success,error)
+        if (!success) {
             toast({
                 title: "form.error.title",
-                description: `form.error.${r}`,
+                description: `form.error.${error}`,
                 variant: "destructive"
             });
         }
