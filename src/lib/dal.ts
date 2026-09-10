@@ -5,29 +5,9 @@ import { SessionAuth, SessionUser, SessionUserContainer } from '@/lib/definition
 import { getCookie } from 'cookies-next';
 
 
-export const verifySession = cache(async () => {
-    const cookie = await getCookie('session')
-    const session = await decrypt(cookie);
-    if (!session) {
-        return undefined;
-    }
+export async function getUser(sessionId: string) {
     const data = await prisma.session.findUnique({
-        where: { id: session.sessionId }
-    });
-    if (!data) {
-        return undefined;
-    }
-    updateSession();
-    return <SessionAuth>{ isAuth: true, sessionId: session.sessionId };
-})
-
-export const getUser = cache(async () => {
-    const session = await verifySession();
-    if (!session) {
-        return null;
-    }
-    const data = await prisma.session.findUnique({
-        where: { id: session.sessionId },
+        where: { id: sessionId },
         select: {
             user: {
                 select: {
@@ -47,19 +27,15 @@ export const getUser = cache(async () => {
 
     if (!data) {
         console.log('User not in the database')
-        return null;
+        return undefined;
     }
     const user = data.user;
     return <SessionUser>{ id: user.id, email: user.email, name: user.name, nickname: user.nickname, roles: user.userRoles.map((r) => r.role) };
-})
+}
 
-export const getUserContainer = cache(async () => {
-    const session = await verifySession();
-    if (!session) {
-        return null;
-    }
+export async function getUserContainer(sessionId: string) {
     const data = await prisma.session.findUnique({
-        where: { id: session.sessionId },
+        where: { id: sessionId },
         select: {
             user: {
                 select: {
@@ -90,4 +66,4 @@ export const getUserContainer = cache(async () => {
     }
     const user = data.user;
     return <SessionUserContainer>{ id: user.id, email: user.email, name: user.name, nickname: user.nickname, roles: user.userRoles.map((r) => r.role), containers: user.containers };
-})
+}

@@ -30,6 +30,7 @@
     "clsx": "^2.1.1",
     "cookie": "^1.1.1",
     "cookies-next": "^6.1.1",
+    "csrf": "^3.1.0",
     "jose": "^6.2.8",
     "lucide-react": "^0.474.0",
     "motion": "^12.1.0",

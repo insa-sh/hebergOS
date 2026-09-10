@@ -13,19 +13,50 @@ import ChangeNickname from "./dialogs/users/ChangeNickname";
 import ChangeMail from "./dialogs/users/ChangeMail";
 import DeleteUser from "./dialogs/users/DeleteUser";
 import { getUser } from "@/lib/dal";
-import { signOut } from "@/actions/auth";
+import { CSRFResponse, ErrorResponse, SignoutRequest } from "@/lib/authDefinitions";
+import { toast } from "@/hooks/use-toast";
 
-export default async function UserDropdown({}) {
+export default async function UserDropdown({ }) {
 
     const t = useTranslations("components.users.userDropdown");
     const user = await getUser();
-    if (!user){
+    if (!user) {
         return null;
     }
 
 
     const handleLogout = async () => {
-        signOut();
+        const csrfRes = await fetch('/api/auth/csrf', {
+            method: 'GET'
+        })
+        if (!csrfRes.ok) {
+            const { error }: ErrorResponse = await csrfRes.json()
+            toast({
+                title: "form.error.title",
+                description: `form.error.${error}`,
+                variant: "destructive"
+            });;
+            return
+        }
+        const { csrfToken }: CSRFResponse = await csrfRes.json()
+        const signoutReq: SignoutRequest = {
+            csrfToken
+        }
+        const signoutRes = await fetch('/api/auth/signout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(signoutReq),
+        })
+        if (!signoutRes.ok) {
+            const { error }: ErrorResponse = await signoutRes.json()
+            toast({
+                title: "form.error.title",
+                description: `form.error.${error}`,
+                variant: "destructive"
+            });
+        }
     }
 
 

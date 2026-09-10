@@ -12,8 +12,9 @@ import { SignInFormSchema } from "@/lib/definitions";;
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { signIn } from "@/actions/auth";
-import { z } from "zod";
+import { signIn } from "@/lib/auth";
+import { setCookie } from "cookies-next/client";
+import { CSRFResponse, ErrorResponse, SigninRequest } from "@/lib/authDefinitions";
 
 export default function LoginForm() {
     const t = useTranslations("components.auth.login");
@@ -28,19 +29,42 @@ export default function LoginForm() {
         }
     });
 
-    const onSubmit = async (data:  { nickname: string; password: string; }) => {
+    const onSubmit = async (data: { nickname: string; password: string; }) => {
         setLoading(true);
-	console.log("Sign In")
-        const {success, error} = await signIn(data)
-	console.log(success,error)
-        if (!success) {
+        const csrfRes = await fetch('/api/auth/csrf', {
+            method: 'GET'
+        })
+        if (!csrfRes.ok) {
+            const { error }: ErrorResponse = await csrfRes.json()
+            toast({
+                title: "form.error.title",
+                description: `form.error.${error}`,
+                variant: "destructive"
+            });
+            setLoading(false);
+            return
+        }
+        const { csrfToken }: CSRFResponse = await csrfRes.json()
+        const signinReq: SigninRequest = {
+            csrfToken,
+            nickname: data.nickname,
+            password: data.password,
+        }
+        const signinRes = await fetch('/api/auth/signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(signinReq),
+        })
+        if (!signinRes.ok) {
+            const { error }: ErrorResponse = await signinRes.json()
             toast({
                 title: "form.error.title",
                 description: `form.error.${error}`,
                 variant: "destructive"
             });
         }
-
         setLoading(false);
     };
 
@@ -93,8 +117,8 @@ export default function LoginForm() {
                         />
 
                         {loading
-                            ? <Button className={"ml-auto mr-0 flex"} type="submit" disabled><Loader2 className="animate-spin mr-2" /> {t('form.actions.submitting')}</Button>
-                            : <Button className={"block ml-auto mr-0"} type="submit"> {t('form.actions.submit')}</Button>
+                            ? <Button className={"ml-auto mr-0 flex"} disabled><Loader2 className="animate-spin mr-2" /> {t('form.actions.submitting')}</Button>
+                            : <Button className={"block ml-auto mr-0"}> {t('form.actions.submit')}</Button>
                         }
                     </form>
                 </Form>

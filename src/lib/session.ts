@@ -2,12 +2,12 @@ import { JWTPayload, SignJWT, jwtVerify } from 'jose'
 import { SessionPayload } from '@/lib/definitions'
 import { serialize } from 'cookie'
 import { prisma } from "@/lib/prisma";
-import { NextRequest } from 'next/server';
-import { getCookie, getCookies, setCookie, deleteCookie, hasCookie } from 'cookies-next';
+import { Session } from './authDefinitions';
+import { getUser } from './dal';
 
 
-const secretKey = process.env.SESSION_SECRET
-const encodedKey = new TextEncoder().encode(secretKey)
+const secretKey = process.env.SESSION_SECRET;
+const encodedKey = new TextEncoder().encode(secretKey);
 
 export async function encrypt(payload: SessionPayload) {
 	return new SignJWT(payload)
@@ -30,7 +30,7 @@ export async function decrypt(session: string | undefined = ''): Promise<Session
 }
 
 
-export async function createSession(userId: string) {
+export async function generateSessionCookie(userId: string) {
 	const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 	const data = await prisma.session.create({
 		data: {
@@ -43,21 +43,29 @@ export async function createSession(userId: string) {
 	});
 	const sessionId = data.id;
 
-	const session = await encrypt({ sessionId, expiresAt })
-	await setCookie('session', session, {
+	const encryptedSession = await encrypt({ sessionId, expiresAt })
+	const cookie = serialize('session', encryptedSession, {
 		httpOnly: true,
 		secure: true,
 		expires: expiresAt,
 		sameSite: 'lax',
 		path: '/',
 	})
+	return cookie
 }
 
-export async function updateSession() {
-	const cookie = await getCookie('session')
-	const session = await decrypt(cookie)
+export async function updateSession(sessionCookie: string) {
+	const session = await decrypt(sessionCookie)
 	if (!session) {
-		return
+		return <Session>{
+			sessionCookie: serialize('session', '', {
+				httpOnly: true,
+				secure: true,
+				maxAge: 0,
+				sameSite: 'lax',
+				path: '/',
+			})
+		};
 	}
 	const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 	const data = await prisma.session.update({
@@ -66,44 +74,82 @@ export async function updateSession() {
 	});
 	const sessionId = data.id;
 
-	const newSession = await encrypt({ sessionId, expiresAt })
-	await setCookie('session', newSession, {
+	const newSessionCookie = await encrypt({ sessionId, expiresAt })
+	return <Session>{
+		sessionCookie: serialize('session', newSessionCookie, {
+			httpOnly: true,
+			secure: true,
+			expires: expiresAt,
+			sameSite: 'lax',
+			path: '/',
+		}),
+		user: await getUser(sessionId)
+	}
+}
+
+export async function deleteSessionCookie(sessionCookie: string) {
+	const session = await decrypt(sessionCookie);
+	if (!session) {
+		return serialize('session', '', {
+			httpOnly: true,
+			secure: true,
+			maxAge: 0,
+			sameSite: 'lax',
+			path: '/',
+		})
+	}
+	await prisma.session.delete({
+		where: { id: session.sessionId },
+	});
+	return serialize('session', '', {
 		httpOnly: true,
 		secure: true,
-		expires: expiresAt,
+		maxAge: 0,
 		sameSite: 'lax',
 		path: '/',
 	})
 }
 
-export async function deleteSession() {
-	const cookie = await getCookie('session')
-	const session = await decrypt(cookie);
-	if (!session) {
-		return
-	}
-	await prisma.session.delete({
-		where: { id: session.sessionId },
-	});
-	await deleteCookie('session')
-}
-
 // Return true if the current user cookie should be removed
-export async function deleteAllSessionUser(userId: string) {
-	const cookie = await getCookie('session')
-	const session = await decrypt(cookie);
+export async function deleteAllSessionUser(sessionCookie: string, userId: string) {
+	const session = await decrypt(sessionCookie);
 	if (!session) {
-		return
+		return false
 	}
-	
+
 	await prisma.session.deleteMany({
 		where: { userId: userId },
 	});
-	
-	const data = await prisma.session.findUnique({
+
+	const currentSession = await prisma.session.findUnique({
 		where: { id: session.sessionId }
 	});
-	if (data?.userId == userId) { // Admin action / User Action
-		await deleteCookie('session')
+	if (currentSession?.userId == userId) { // Admin action / User Action
+		return true
 	}
+
+	return false
+}
+
+/**
+ * 
+ * @param sessionCookie value of the session cookie
+ * @returns false if the session is not valid
+ */
+export async function checkSession(sessionCookie: string) {
+	const session = await decrypt(sessionCookie);
+	if (!session) {
+		return false
+	}
+
+	const prismaSession = await prisma.session.findUnique({
+		where: { id: session.sessionId },
+		select: {expires: true}
+	})
+
+	if (prismaSession && (prismaSession.expires.getDate() - Date.now()) > 0) {
+		return true
+	}
+
+	return false
 }

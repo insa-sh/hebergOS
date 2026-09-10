@@ -2,34 +2,43 @@ import createMiddleware from 'next-intl/middleware';
 import { routing } from '@/i18n/routing';
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getUser, verifySession,  } from '@/lib/dal';
+import { getUser  } from '@/lib/dal';
 import { Role } from '@prisma/client';
+import { checkSession } from './lib/session';
 
 
 export default async function proxy(req: NextRequest) {
     const handleI18nRouting = createMiddleware(routing);
     const path = req.nextUrl.pathname
     const locale = getLocaleFromUrl(req.nextUrl);
+    const sessionCookie = req.cookies.get('session')?.value || ''
+    const isOnApp = new RegExp(`(${routing.locales.join('|')})/app`).test(req.nextUrl.pathname);
+    const isOnAdminPage = new RegExp(`(${routing.locales.join('|')})/app/administration`).test(req.nextUrl.pathname);
+    const isOnLoginPage = new RegExp(`(${routing.locales.join('|')})/login`).test(req.nextUrl.pathname);
+    const isLoggedIn = await checkSession(sessionCookie)
+    const user = await getUser(sessionCookie)
 
-    
-    if (await needLogin(req)) {
-        return NextResponse.redirect(new URL(`/${locale}/login`,req.nextUrl));
-    }
-    
-    if (await verifySession() && RegExp(`^/(${routing.locales.join('|')})/login$`).test(path)) {
+    if (isLoggedIn && isOnLoginPage) {
         return NextResponse.redirect(new URL(`/${locale}/app`,req.nextUrl));
     }
 
-    const response = handleI18nRouting(req);
+    if (!isLoggedIn && isOnApp) {
+        return NextResponse.redirect(new URL(`/${locale}/login`,req.nextUrl))
+    }
 
-    response.headers.set('X-Current-Path', path);
+    if (isLoggedIn && isOnAdminPage && !(user?.roles.includes(Role.ADMIN))) {
+        return NextResponse.redirect(new URL(`/${locale}/app`,req.nextUrl))
+    }
 
-    return response;
+    const defaultResponse = handleI18nRouting(req);
+    defaultResponse.headers.set('X-Current-Path', path);
+
+    return defaultResponse
 }
 
-async function needLogin(req : NextRequest){
-    const sessionUser = await getUser();
-    const isLoggedIn = (sessionUser != null);
+async function needLogin(req : NextRequest, sessionId: string){
+    const sessionUser = await getUser(sessionId);
+    const isLoggedIn = (sessionUser != undefined);
     const isOnApp = new RegExp(`(${routing.locales.join('|')})/app`).test(req.nextUrl.pathname);
     const isOnAdminPage = new RegExp(`(${routing.locales.join('|')})/app/administration`).test(req.nextUrl.pathname);
 
