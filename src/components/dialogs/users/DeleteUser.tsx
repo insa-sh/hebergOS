@@ -1,5 +1,5 @@
 import { deleteUser } from "@/actions/user";
-import { signOut } from "@/app/api/auth";
+import { signOut } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";

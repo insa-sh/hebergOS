@@ -14,7 +14,7 @@ import ChangeMail from "./dialogs/users/ChangeMail";
 import { SessionUser } from "@/lib/definitions";
 import DeleteUser from "./dialogs/users/DeleteUser";
 import { getUser } from "@/lib/dal";
-import { signOut } from "@/app/api/auth";
+import { signOut } from "@/actions/auth";
 
 export default async function UserDropdown() {
 

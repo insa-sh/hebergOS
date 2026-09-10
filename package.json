@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack -p $PORT",
+    "dev": "next dev --turbopack -p 3630",
     "build": "next build",
     "start": "next start -p $PORT",
     "lint": "next lint"
@@ -40,6 +40,7 @@
     "recharts": "^3.10.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^14.0.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {

@@ -2,11 +2,10 @@ import 'server-only'
 
 import { cookies } from 'next/headers'
 import { decrypt, updateSession } from '@/lib/session'
-import { cache } from 'react'
 import { prisma } from '@/lib/prisma'
 import { SessionAuth, SessionUser } from '@/lib/definitions'
 
-export const verifySession = cache(async () => {
+export const verifySession = async () => {
     const cookie = (await cookies()).get('session')?.value;
     const session = await decrypt(cookie);
     if (!session) {
@@ -20,9 +19,9 @@ export const verifySession = cache(async () => {
     }
     updateSession();
     return <SessionAuth>{ isAuth: true, sessionId: session.sessionId };
-})
+}
 
-export const getUser = cache(async () => {
+export const getUser = async () => {
     const session = await verifySession();
     if (!session) {
         return null;
@@ -55,4 +54,4 @@ export const getUser = cache(async () => {
     const user = data.user;
     return <SessionUser>{ id: user.id, email: user.email, name: user.name, nickname: user.nickname, roles: user.userRoles.map((r) => r.role) };
 
-})
+}

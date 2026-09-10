@@ -1,6 +1,6 @@
 import { getAvailableHostPorts, getContainersAdmin } from "@/actions/containers";
 import { getUsers } from "@/actions/user";
-import AdministrationTabs from "./AdministrationTabs";
+import AdministrationTabs from "@/components/AdministrationTabs";
 import { getAllTickets } from "@/actions/ticket";
 
 export default async function AdministrationPage() {

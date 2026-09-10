@@ -2,7 +2,7 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import type { Metadata, Viewport } from "next";
 import "../globals.css";
 import { roboto } from "../../ui/fonts";
-import { Providers } from "./providers";
+import { Providers } from "@/providers";
 import { getMessages } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
