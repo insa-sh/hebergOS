@@ -1,11 +1,12 @@
-import bcrypt from 'bcryptjs';
+
 import { Role } from '@prisma/client';
-import { SignInFormSchema, UserWithContainers, SessionUser } from '@/lib/definitions';
+import {  SessionUser, UserWithContainers } from '@/lib/definitions';
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { prisma } from "@/lib/prisma";
 import { ContainerState } from "@prisma/client";
 import { getUser, verifySession } from '@/lib/dal';
+import { useSession } from '@/providers/sessionProvider';
 
 
 export function cn(...inputs: ClassValue[]) {
@@ -13,7 +14,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export async function isAdmin() {
-  const sessionUser = await getUser();
+  const {getSession} = useSession()
+  const sessionUser = getSession()
 
   if (!sessionUser) {
     return false;
@@ -23,7 +25,8 @@ export async function isAdmin() {
 }
 
 export async function isUser(id: string) {
-  const sessionUser = await getUser();
+  const {getSession} = useSession()
+  const sessionUser = getSession()
 
   if (!sessionUser) {
     return false;
@@ -33,7 +36,8 @@ export async function isUser(id: string) {
 }
 
 export async function canAccessContainer(containerId: string) {
-  const sessionUser = await getUser();
+  const {getSession} = useSession()
+  const sessionUser = getSession()
 
   if (!sessionUser) {
     return false;
@@ -61,9 +65,10 @@ export async function canAccessContainer(containerId: string) {
 }
 
 export async function syncContainers() {
-  const sessionAuth = await verifySession();
+  const {getSession} = useSession()
+  const sessionUser = getSession()
 
-  if (!sessionAuth || sessionAuth.isAuth == false) {
+  if (!sessionUser) {
     return false;
   }
 

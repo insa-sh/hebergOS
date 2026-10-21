@@ -15,7 +15,7 @@ export async function encrypt(payload: SessionPayload) {
 		.sign(encodedKey);
 }
 
-export async function decrypt(session: string | undefined = ''): Promise<SessionPayload & JWTPayload | undefined> {
+export async function decrypt(session: string ): Promise<SessionPayload & JWTPayload | undefined> {
 	try {
 		const { payload } = await jwtVerify<SessionPayload>(session, encodedKey, {
 			algorithms: ['HS256'],
@@ -54,6 +54,9 @@ export async function createSession(userId: string) {
 
 export async function updateSession() {
 	const cookie = (await cookies()).get('session')?.value
+	if (!cookie) {
+		return
+	}
 	const session = await decrypt(cookie)
 	if (!session) {
 		return
@@ -96,6 +99,9 @@ export async function deleteSession() {
 
 export async function deleteAllSessionUser(userId: string) {
 	const cookie = (await cookies()).get('session')?.value;
+	if (!cookie) {
+		return
+	}
 	const session = await decrypt(cookie)
 	if (!session) {
 		return

@@ -7,6 +7,9 @@ import { SessionAuth, SessionUser } from '@/lib/definitions'
 
 export const verifySession = async () => {
     const cookie = (await cookies()).get('session')?.value;
+    if (!cookie) {
+        return undefined
+    }
     const session = await decrypt(cookie);
     if (!session) {
         return undefined;

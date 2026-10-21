@@ -12,11 +12,13 @@ import { headers } from "next/headers";
 import { cn } from "@/lib/utils";
 import ChangeLocale from "./ChangeLocale";
 import { getUser } from "@/lib/dal";
+import { useSession } from "@/providers/sessionProvider";
 
 export default async function Header({ className, locale }: { className?: string, locale: string }) {
     const headerList = headers();
 
-    const sessionUser = await getUser();
+    const { getSession } = useSession()
+    const sessionUser = getSession()
     const isOnLandingPage = new RegExp(`^\/(${routing.locales.join('|')})(/contact-us)?$`).test((await headerList).get("X-Current-Path") || '');
     const t = await getTranslations('components.header');
 

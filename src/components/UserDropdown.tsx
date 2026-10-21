@@ -15,12 +15,14 @@ import { SessionUser } from "@/lib/definitions";
 import DeleteUser from "./dialogs/users/DeleteUser";
 import { getUser } from "@/lib/dal";
 import { signOut } from "@/actions/auth";
+import { useSession } from "@/providers/sessionProvider";
 
 export default async function UserDropdown() {
 
     const t = useTranslations("components.users.userDropdown");
-    const user = await getUser();
-    if (!user){
+    const { getSession } = useSession()
+    const user = getSession()
+    if (!user) {
         return null;
     }
 
