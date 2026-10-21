@@ -194,9 +194,9 @@
                 "description": "Login to your HebergOS account",
                 "form": {
                     "fields": {
-                        "nickname": {
-                            "label": "Username",
-                            "placeholder": "Enter your username"
+                        "email": {
+                            "label": "Email",
+                            "placeholder": "Enter your email"
                         },
                         "password": {
                             "label": "Password",
@@ -209,7 +209,7 @@
                         "forgotPassword": "Forgot password"
                     }
                 },
-                "error": "Invalid username or password"
+                "error": "Invalid email or password"
             },
             "reset": {
                 "title": "Reset",

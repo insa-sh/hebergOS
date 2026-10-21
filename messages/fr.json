@@ -194,9 +194,9 @@
                 "description": "Connectez-vous à votre compte HebergOS",
                 "form": {
                     "fields": {
-                        "nickname": {
-                            "label": "Nom d'utilisateur",
-                            "placeholder": "Entrez votre nom d'utilisateur"
+                        "email": {
+                            "label": "Adresse Mail",
+                            "placeholder": "Entrez votre adresse mail"
                         },
                         "password": {
                             "label": "Mot de passe",
@@ -209,7 +209,7 @@
                         "forgotPassword": "Mot de passe oublié"
                     }
                 },
-                "error": "Nom d'utilisateur ou mot de passe incorrect"
+                "error": "Adresse maill ou mot de passe incorrect"
             },
             "reset": {
                 "title": "Réinitialisation",

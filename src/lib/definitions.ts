@@ -23,7 +23,7 @@ export type SessionUser = {
 }
 
 export const SignInFormSchema = z.object({
-    nickname: z.string().trim(),
+    email: z.email().trim(),
     password: z
         .string()
         .trim(),
@@ -31,9 +31,9 @@ export const SignInFormSchema = z.object({
 
 export const RegisterFormSchema = z.object({
     name: z.string().min(3, { message: 'Name must be at least 3 characters long.' }).trim(),
-    email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+    email: z.email({ message: 'Please enter a valid email.' }).trim(),
     nickname: z.string().min(3, { message: 'Nickname must be at least 3 characters long.' }).trim(),
-    roles: z.array(z.nativeEnum(Role)).default([Role.USER]),
+    roles: z.array(z.enum(Role)).default([Role.USER]),
 });
 
 export const ResetFormSchema = z.object({

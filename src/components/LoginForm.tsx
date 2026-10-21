@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Input } from "./ui/input";
 import { SignInFormSchema } from "@/lib/definitions";
-import { signIn } from "next-auth/react";
+import { authClient } from "@/lib/auth-client";
 import { toast } from "@/hooks/use-toast";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -22,16 +22,16 @@ export default function LoginForm() {
     const form = useForm({
         resolver: zodResolver(SignInFormSchema),
         defaultValues: {
-            nickname: '',
+            email: '',
             password: '',
         }
     });
 
-    const onSubmit = async (data: { nickname: string; password: string; }) => {
+    const onSubmit = async (data: { email: string; password: string; }) => {
         setLoading(true);
-        const r = await signIn('credentials', { nickname: data.nickname, password: data.password, redirectUrl: '/app', redirectTo: '/app', redirect: true });
-	console.log("Signin-Response",r);
-        if (r && r.error) {
+        const {error} = await authClient.signIn.email({ email: data.email, password: data.password, callbackURL: '/app' });
+	
+        if (error) {
             toast({
                 title: "form.error.title",
                 description: "form.error.message",
@@ -59,12 +59,12 @@ export default function LoginForm() {
                     <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-4"}>
                         <FormField
                             control={form.control}
-                            name="nickname"
+                            name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t('form.fields.nickname.label')}</FormLabel>
+                                    <FormLabel>{t('form.fields.email.label')}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder={t('form.fields.nickname.placeholder')} {...field} />
+                                        <Input placeholder={t('form.fields.email.placeholder')} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
